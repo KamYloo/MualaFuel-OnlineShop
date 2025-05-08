@@ -10,4 +10,5 @@ public interface AuthService {
     UserDto createUser(RegisterRequest registerRequest) throws MessagingException;
     String verify(LoginRequest loginRequest) throws MessagingException;
     UserDto findUserByEmail(String email);
+    UserDto verifyToken(String token);
 }

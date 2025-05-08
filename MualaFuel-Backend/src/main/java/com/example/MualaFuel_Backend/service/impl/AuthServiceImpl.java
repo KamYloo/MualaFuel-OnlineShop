@@ -73,4 +73,17 @@ public class AuthServiceImpl implements AuthService {
         return mapper.mapTo(userDao.findByEmail(email).orElseThrow(
                 ()->new UsernameNotFoundException("User not found")));
     }
+
+    @Override
+    public UserDto verifyToken(String token) {
+        if(!jwtService.validateJwtToken(token)){
+            throw new CustomException(BusinessErrorCodes.INVALID_TOKEN);
+        }
+        String userName = jwtService.extractUserName(token);
+
+        User user = userDao.findByEmail(userName).orElseThrow(
+                () -> new RuntimeException("User not found")
+        );
+        return mapper.mapTo(user);
+    }
 }
