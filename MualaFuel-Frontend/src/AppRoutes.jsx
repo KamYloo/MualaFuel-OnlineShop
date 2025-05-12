@@ -1,38 +1,32 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Home } from "./pages/Home.jsx";
 import { Toaster } from "react-hot-toast";
-import {Navbar} from "./components/Navbar.jsx";
 import {Login} from "./pages/Login.jsx";
 import {Registration} from "./pages/Registration.jsx";
 import {Assortment} from "./pages/Assortment.jsx";
 import {Orders} from "./pages/Orders.jsx";
 import {Cart} from "./pages/Cart.jsx";
-
-
+import {NoLayout} from "./layout/NoLayout.jsx";
+import {Layout} from "./layout/Layout.jsx";
 
 function AppRoutes() {
-    const renderLayout = (Component) => (
-        <div className='App'>
-            <div className='navbar'>
-                <Navbar />
-            </div>
-            <div className='content-wrapper'>
-                <Component />
-            </div>
-        </div>
-    );
-
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<Navigate to="/home" />} />
-                <Route path="/home" element={renderLayout(Home)} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/registration" element={<Registration />} />
-                <Route path="/home" element={renderLayout(Home)} />
-                <Route path="/assortment" element={renderLayout(Assortment)} />
-                <Route path="/orders" element={renderLayout(Orders)} />
-                <Route path="/cart" element={renderLayout(Cart)} />
+
+                <Route element={<NoLayout/>}>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/registration" element={<Registration />} />
+                </Route>
+
+                <Route element={<Layout/>}>
+                    <Route path="/home" element={<Home />} />
+                    <Route path="/assortment" element={<Assortment />} />
+                    <Route path="/orders" element={<Orders />} />
+                    <Route path="/cart" element={<Cart />} />
+                </Route>
+
             </Routes>
             <Toaster
                 position="bottom-right"
