@@ -41,7 +41,8 @@ public class SecurityConfig implements WebMvcConfigurer {
 
                             auth.requestMatchers(
                                     "/product/save",
-                                    "/product/update"
+                                    "/product/update",
+                                    "product/update/image/*"
                             ).hasAuthority("ADMIN");
 
                             auth.requestMatchers(HttpMethod.DELETE,
