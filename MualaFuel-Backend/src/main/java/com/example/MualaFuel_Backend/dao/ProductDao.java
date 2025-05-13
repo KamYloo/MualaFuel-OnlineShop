@@ -84,11 +84,16 @@ public class ProductDao {
         SQL_SELECT += stringSearchBuilder(productSearch);
         SQL_SELECT += "LIMIT ? OFFSET ?";
 
+        System.out.println(SQL_SELECT);
+
         List<Product> products = new ArrayList<>();
         long totalElements = 0;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement dataStatement = conn.prepareStatement(SQL_SELECT)){
+
+            dataStatement.setInt(1, pageable.getPageSize());
+            dataStatement.setInt(2, (int)pageable.getOffset());
 
              ResultSet rs = dataStatement.executeQuery();
 
@@ -174,15 +179,15 @@ public class ProductDao {
 
     private String stringSearchBuilder(ProductSearchDto productSearch){
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("WHERE ");
+        stringBuilder.append(" WHERE ");
 
-        stringBuilder.append("capacityInMilliliters BETWEEN ");
+        stringBuilder.append("capacity_in_milliliters BETWEEN ");
         stringBuilder.append(productSearch.getMinCapacity());
         stringBuilder.append(" AND ");
         stringBuilder.append(productSearch.getMaxCapacity());
 
         stringBuilder.append(" AND ");
-        stringBuilder.append("alcoholContent BETWEEN ");
+        stringBuilder.append("alcohol_content BETWEEN ");
         stringBuilder.append(productSearch.getMinAlcoholContent());
         stringBuilder.append(" AND ");
         stringBuilder.append(productSearch.getMaxAlcoholContent());
@@ -194,9 +199,9 @@ public class ProductDao {
         stringBuilder.append(productSearch.getMaxPrice());
 
         if(!productSearch.getAlcoholType().isEmpty()){
-            stringBuilder.append(" AND alcoholType IN (");
-            for (AlcoholType type : AlcoholType.values()) {
-                stringBuilder.append(type.toString());
+            stringBuilder.append(" AND alcohol_type IN (");
+            for (AlcoholType type : productSearch.getAlcoholType()) {
+                stringBuilder.append("'").append(type.name()).append("'");
                 stringBuilder.append(",");
             }
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
