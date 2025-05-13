@@ -122,7 +122,7 @@ public class ProductDao {
         return new PageImpl<>(products, pageable, totalElements);
     }
 
-    public void update(Product product) {
+    public Product update(Product product) {
         final String SQL_UPDATE = "UPDATE product SET name = ?, description = ?, price = ?, brand = ?, " +
                 "alcohol_type = ?, quantity = ?, alcohol_content = ?, " +
                 "capacity_in_milliliters = ?, image_path = ? WHERE id = ?";
@@ -149,6 +149,7 @@ public class ProductDao {
         } catch (SQLException ex) {
             throw new RuntimeException("Error updating product", ex);
         }
+        return product;
     }
 
     public void delete(Long id) {

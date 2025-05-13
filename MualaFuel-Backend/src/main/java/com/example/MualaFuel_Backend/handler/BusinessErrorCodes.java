@@ -11,7 +11,8 @@ public enum BusinessErrorCodes{
     BAD_CREDENTIALS(301, "Login and / or password is incorrect", HttpStatus.FORBIDDEN),
     EMAIL_IS_USED(302, "Email is used", HttpStatus.BAD_REQUEST),
     BAD_COOKIE(303, "No jwt cookie found", HttpStatus.BAD_REQUEST),
-    INVALID_TOKEN(304,"Invalid jwt token", HttpStatus.BAD_REQUEST)
+    INVALID_TOKEN(304,"Invalid jwt token", HttpStatus.BAD_REQUEST),
+    NOT_FOUND(305,"Not found", HttpStatus.NOT_FOUND),
     ;
     @Getter
     private final int code;
