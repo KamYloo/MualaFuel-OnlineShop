@@ -82,18 +82,25 @@ public class ProductDao {
         String countQuery = "SELECT COUNT(*) FROM product";
 
         SQL_SELECT += stringSearchBuilder(productSearch);
-        SQL_SELECT += "LIMIT ? OFFSET ?";
-
-        System.out.println(SQL_SELECT);
+        SQL_SELECT += " LIMIT ? OFFSET ?";
 
         List<Product> products = new ArrayList<>();
         long totalElements = 0;
+        int index = 1;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement dataStatement = conn.prepareStatement(SQL_SELECT)){
 
-            dataStatement.setInt(1, pageable.getPageSize());
-            dataStatement.setInt(2, (int)pageable.getOffset());
+            if(productSearch.getName() != null && !productSearch.getName().isEmpty() ) {
+                dataStatement.setString(index++, "%" + productSearch.getName().toLowerCase() + "%");
+            }
+
+            if(productSearch.getBrand() != null && !productSearch.getBrand().isEmpty() ) {
+                dataStatement.setString(index++, "%" + productSearch.getBrand().toLowerCase() + "%");
+            }
+
+            dataStatement.setInt(index++, pageable.getPageSize());
+            dataStatement.setInt(index++, (int)pageable.getOffset());
 
              ResultSet rs = dataStatement.executeQuery();
 
@@ -198,22 +205,22 @@ public class ProductDao {
         stringBuilder.append(" AND ");
         stringBuilder.append(productSearch.getMaxPrice());
 
-        if(!productSearch.getAlcoholType().isEmpty()){
+        if(productSearch.getAlcoholType() != null && !productSearch.getAlcoholType().isEmpty()){
             stringBuilder.append(" AND alcohol_type IN (");
             for (AlcoholType type : productSearch.getAlcoholType()) {
                 stringBuilder.append("'").append(type.name()).append("'");
                 stringBuilder.append(",");
             }
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-            stringBuilder.append(") ");
+            stringBuilder.append(")");
         }
 
         if(productSearch.getName() != null && !productSearch.getName().isEmpty()){
-            stringBuilder.append("AND name LIKE %?%");
+            stringBuilder.append(" AND LOWER(name) LIKE ?");
         }
 
         if (productSearch.getBrand() != null && !productSearch.getBrand().isEmpty()){
-            stringBuilder.append("AND brand LIKE %?%");
+            stringBuilder.append(" AND LOWER(brand) LIKE ?");
         }
 
         return stringBuilder.toString();
