@@ -1,6 +1,7 @@
 package com.example.MualaFuel_Backend.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
@@ -26,6 +28,9 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     private final JwtFilter jwtFilter;
     private final AuthenticationProvider authenticationProvider;
+
+    @Value("${application.file.image-dir}")
+    private String uploadDir;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http)  throws Exception {
@@ -49,7 +54,8 @@ public class SecurityConfig implements WebMvcConfigurer {
 
                             auth.requestMatchers(
                                     "/auth/**",
-                                    "/product/**"
+                                    "/product/**",
+                                    "/uploads/**"
                             ).permitAll();
 
                             auth.anyRequest().authenticated();
@@ -78,5 +84,11 @@ public class SecurityConfig implements WebMvcConfigurer {
             cfg.setAllowCredentials(true);
             return cfg;
         };
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:"+uploadDir);
     }
 }

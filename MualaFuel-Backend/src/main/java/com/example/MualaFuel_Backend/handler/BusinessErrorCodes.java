@@ -13,6 +13,7 @@ public enum BusinessErrorCodes{
     BAD_COOKIE(303, "No jwt cookie found", HttpStatus.BAD_REQUEST),
     INVALID_TOKEN(304,"Invalid jwt token", HttpStatus.BAD_REQUEST),
     NOT_FOUND(305,"Not found", HttpStatus.NOT_FOUND),
+    IMAGE_FETCH_FAILED(306,"Image fetch failed", HttpStatus.BAD_REQUEST),
     ;
     @Getter
     private final int code;

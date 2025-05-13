@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/product")
@@ -24,12 +25,12 @@ public class ProductController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Product> save(@RequestBody ProductDto product) {
+    public ResponseEntity<ProductDto> save(@RequestBody ProductDto product) {
         return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<Product> update(@RequestBody ProductDto product) {
+    public ResponseEntity<ProductDto> update(@RequestBody ProductDto product) {
         return new ResponseEntity<>(productService.update(product), HttpStatus.OK);
     }
 
@@ -40,7 +41,12 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> findById(@PathVariable long id) {
+    public ResponseEntity<ProductDto> findById(@PathVariable long id) {
         return new ResponseEntity<>(productService.findById(id), HttpStatus.OK);
+    }
+
+    @PostMapping("/update/image/{id}")
+    public ResponseEntity<ProductDto> updateImage(@PathVariable long id, @RequestParam("image") MultipartFile image) {
+        return new ResponseEntity<>(productService.updateImage(id, image), HttpStatus.OK);
     }
 }

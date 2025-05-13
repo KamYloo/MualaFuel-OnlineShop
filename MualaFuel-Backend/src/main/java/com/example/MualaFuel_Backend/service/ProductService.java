@@ -5,11 +5,13 @@ import com.example.MualaFuel_Backend.dto.ProductSearchDto;
 import com.example.MualaFuel_Backend.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ProductService {
-    Product save(ProductDto product);
-    Product update(ProductDto product);
+    ProductDto save(ProductDto product);
+    ProductDto update(ProductDto product);
     void delete(long id);
-    Product findById(long id);
+    ProductDto findById(long id);
     Page<Product> getAllProducts(Pageable pageable, ProductSearchDto productSearch);
+    ProductDto updateImage(long id, MultipartFile image);
 }
