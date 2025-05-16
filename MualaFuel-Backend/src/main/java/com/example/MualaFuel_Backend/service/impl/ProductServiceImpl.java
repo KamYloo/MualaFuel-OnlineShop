@@ -46,14 +46,20 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto findById(long id) {
         Product product = productDao.findById(id).orElseThrow(
                 ()-> new CustomException(BusinessErrorCodes.NOT_FOUND));
-        product.setImagePath(cdn + product.getImagePath());
+        product.setImagePath(
+                product.getImagePath() != null ?
+                        cdn + product.getImagePath(): null);
         return mapper.mapTo(product);
     }
 
     @Override
     public Page<Product> getAllProducts(Pageable pageable, ProductSearchDto productSearch) {
         Page<Product> products = productDao.findAll(pageable, productSearch);
-        products.getContent().forEach(product -> product.setImagePath(cdn + product.getImagePath()));
+        products.getContent().forEach(product ->
+                    product.setImagePath(
+                            product.getImagePath() != null ?
+                                    cdn + product.getImagePath(): null)
+        );
         return products;
     }
 

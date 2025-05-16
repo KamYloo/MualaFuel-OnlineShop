@@ -19,7 +19,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping("/find")
+    @PostMapping("/find")
     public Page<Product> find(Pageable pageable, @RequestBody ProductSearchDto productSearch) {
         return productService.getAllProducts(pageable, productSearch);
     }
