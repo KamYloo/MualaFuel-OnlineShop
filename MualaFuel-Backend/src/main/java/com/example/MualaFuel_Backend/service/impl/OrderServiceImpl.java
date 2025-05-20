@@ -38,7 +38,6 @@ public class OrderServiceImpl implements OrderService {
     private final Mapper<Order, OrderDto> mapper;
 
     @Override
-    @Transactional
     public OrderDto placeOrder(ShippingDetails shippingDetails,
                                PaymentDetails paymentDetails,
                                Principal principal) throws SQLException {
