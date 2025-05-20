@@ -18,8 +18,6 @@ public class OrderDto {
     private Long id;
     private BigDecimal totalAmount;
     private OrderStatus status;
-    private Long userId;
-    private String userUsername;
     private List<OrderItemDto> orderItems;
     private LocalDate orderDate;
     private ShippingDetails shippingDetails;

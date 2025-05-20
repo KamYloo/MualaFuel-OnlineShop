@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,12 +49,12 @@ public class OrderServiceImpl implements OrderService {
                 () -> new CustomException(BusinessErrorCodes.NOT_FOUND)
         );
 
-        Order order = new Order();
-        order.setUser(user);
-        order.setOrderDate(LocalDate.now());
-        order.setStatus(OrderStatus.NEW);
-        order.setAddress(shippingDetails);
-        order.setPaymentDetails(paymentDetails);
+        Order order = Order.builder()
+                .user(user)
+                .status(OrderStatus.NEW)
+                .address(shippingDetails)
+                .paymentDetails(paymentDetails)
+                .build();
 
         Order savedOrder = orderRepository.save(order);
 
@@ -91,5 +92,14 @@ public class OrderServiceImpl implements OrderService {
         cart.clear();
 
         return mapper.mapTo(savedOrder);
+    }
+
+    @Override
+    public List<OrderDto> getAllOrdersOfUser(Principal principal) throws SQLException {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow(
+                () -> new CustomException(BusinessErrorCodes.NOT_FOUND)
+        );
+        List<Order> list = orderRepository.findByUserId(user.getId());
+        return list.stream().map(mapper::mapTo).collect(Collectors.toList());
     }
 }

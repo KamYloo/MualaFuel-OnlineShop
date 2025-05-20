@@ -6,9 +6,11 @@ import com.example.MualaFuel_Backend.entity.ShippingDetails;
 
 import java.security.Principal;
 import java.sql.SQLException;
+import java.util.List;
 
 public interface OrderService {
     OrderDto placeOrder(ShippingDetails shippingDetails,
                         PaymentDetails paymentDetails,
                         Principal principal) throws SQLException;
+    List<OrderDto> getAllOrdersOfUser(Principal principal) throws SQLException;
 }

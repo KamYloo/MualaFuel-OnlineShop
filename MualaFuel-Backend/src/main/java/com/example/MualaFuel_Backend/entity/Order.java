@@ -32,7 +32,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
 
-    private LocalDate orderDate;
+    private LocalDate orderDate = LocalDate.now();
 
     @Embedded
     private ShippingDetails address;
