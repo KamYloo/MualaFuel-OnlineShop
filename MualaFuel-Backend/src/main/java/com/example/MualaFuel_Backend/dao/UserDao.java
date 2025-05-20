@@ -56,6 +56,47 @@ public class UserDao {
         }
     }
 
+    public Optional<User> findById(long id) {
+        final String SQL_USER = "SELECT id, first_name, last_name, email, password FROM \"user\" WHERE id = ?";
+        final String SQL_ROLES = "SELECT r.id, r.name FROM role r " +
+                "JOIN user_role ur ON r.id = ur.role_id " +
+                "WHERE ur.user_id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            PreparedStatement statement = conn.prepareStatement(SQL_USER);
+            statement.setLong(1, id);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getLong("id"));
+                    user.setFirstName(rs.getString("first_name"));
+                    user.setLastName(rs.getString("last_name"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPassword(rs.getString("password"));
+
+                    try (PreparedStatement roleStmt = conn.prepareStatement(SQL_ROLES)) {
+                        roleStmt.setLong(1, user.getId());
+                        try (ResultSet roleRs = roleStmt.executeQuery()) {
+                            Set<Role> roles = new HashSet<>();
+                            while (roleRs.next()) {
+                                Role role = new Role();
+                                role.setId(roleRs.getLong("id"));
+                                role.setName(roleRs.getString("name"));
+                                roles.add(role);
+                            }
+                            user.setRoles(roles);
+                        }
+                    }
+
+                    return Optional.of(user);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.empty();
+    }
+
     public Optional<User> findByEmail(String email) {
         final String SQL_USER = "SELECT id, first_name, last_name, email, password FROM \"user\" WHERE email = ?";
         final String SQL_ROLES = "SELECT r.id, r.name FROM role r " +

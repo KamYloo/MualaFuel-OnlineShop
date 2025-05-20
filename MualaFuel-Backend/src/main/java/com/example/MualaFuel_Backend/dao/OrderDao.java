@@ -1,10 +1,9 @@
 package com.example.MualaFuel_Backend.dao;
 
-import com.example.MualaFuel_Backend.entity.Order;
-import com.example.MualaFuel_Backend.entity.PaymentDetails;
-import com.example.MualaFuel_Backend.entity.ShippingDetails;
+import com.example.MualaFuel_Backend.entity.*;
 import com.example.MualaFuel_Backend.enums.OrderStatus;
 import com.example.MualaFuel_Backend.factory.ConnectionFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -13,7 +12,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class OrderDao {
+
+    private final OrderItemDao orderItemRepository;
+    private final UserDao userDao;
+
     public Order save(Order order) throws SQLException {
         String insert = "INSERT INTO orders (total_amount, status, user_id, order_date, " +
                 "shipping_street, shipping_city, shipping_zip_code, shipping_country, " +
@@ -98,7 +102,9 @@ public class OrderDao {
                 ps.setLong(1, id);
                 try(ResultSet rs = ps.executeQuery()){
                     while(rs.next()){
-                        list.add(map(rs));
+                        Order order = map(rs);
+
+                        list.add(order);
                     }
                 }
             }
@@ -145,13 +151,19 @@ public class OrderDao {
                 .payment_transactionId(rs.getString("payment_transaction_id"))
                 .build();
 
+        List<OrderItem> orderItems = orderItemRepository.findByOrderId(rs.getLong("id"));
+
+        User user = userDao.findById(rs.getLong("user_id")).get();
+
         return Order.builder()
                 .id(rs.getLong("id"))
+                .orderItems(orderItems)
                 .totalAmount(rs.getBigDecimal("total_amount"))
                 .status(OrderStatus.valueOf(rs.getString("status")))
                 .orderDate(rs.getDate("order_date").toLocalDate())
                 .address(shippingDetails)
                 .paymentDetails(paymentDetails)
+                .user(user)
                 .build();
     }
 

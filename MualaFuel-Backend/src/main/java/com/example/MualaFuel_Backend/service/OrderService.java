@@ -13,4 +13,6 @@ public interface OrderService {
                         PaymentDetails paymentDetails,
                         Principal principal) throws SQLException;
     List<OrderDto> getAllOrdersOfUser(Principal principal) throws SQLException;
+    void updateStatusOfOrder(Long orderId) throws SQLException;
+    void cancelOrder(Long orderId) throws SQLException;
 }

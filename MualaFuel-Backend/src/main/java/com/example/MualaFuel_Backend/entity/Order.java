@@ -29,10 +29,10 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderItem> orderItems;
 
-    private LocalDate orderDate = LocalDate.now();
+    private LocalDate orderDate;
 
     @Embedded
     private ShippingDetails address;

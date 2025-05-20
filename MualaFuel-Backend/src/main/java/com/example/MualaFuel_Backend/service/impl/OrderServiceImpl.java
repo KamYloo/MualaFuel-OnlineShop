@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.MualaFuel_Backend.enums.OrderStatus.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -36,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private final Mapper<Order, OrderDto> mapper;
 
     @Override
+    @Transactional
     public OrderDto placeOrder(ShippingDetails shippingDetails,
                                PaymentDetails paymentDetails,
                                Principal principal) throws SQLException {
@@ -51,6 +54,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = Order.builder()
                 .user(user)
+                .orderDate(LocalDate.now())
                 .status(OrderStatus.NEW)
                 .address(shippingDetails)
                 .paymentDetails(paymentDetails)
@@ -101,5 +105,37 @@ public class OrderServiceImpl implements OrderService {
         );
         List<Order> list = orderRepository.findByUserId(user.getId());
         return list.stream().map(mapper::mapTo).collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateStatusOfOrder(Long orderId) throws SQLException {
+        Order order = getOrder(orderId);
+        order.setStatus(nextStatus(order.getStatus()));
+        orderRepository.save(order);
+    }
+
+    @Override
+    public void cancelOrder(Long orderId) throws SQLException {
+        Order order = getOrder(orderId);
+        order.setStatus(OrderStatus.CANCELLED);
+        orderRepository.save(order);
+    }
+
+    private Order getOrder(Long orderId) throws SQLException {
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new CustomException(BusinessErrorCodes.NOT_FOUND)
+        );
+        return order;
+    }
+
+    private OrderStatus nextStatus(OrderStatus orderStatus) {
+        switch (orderStatus) {
+            case NEW: return PAID;
+            case PAID: return SHIPPED;
+            case SHIPPED: return DELIVERED;
+            case DELIVERED:
+            case CANCELLED:
+            default: return null;
+        }
     }
 }

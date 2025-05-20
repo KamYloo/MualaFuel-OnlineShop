@@ -4,6 +4,7 @@ import com.example.MualaFuel_Backend.entity.Order;
 import com.example.MualaFuel_Backend.entity.OrderItem;
 import com.example.MualaFuel_Backend.entity.Product;
 import com.example.MualaFuel_Backend.factory.ConnectionFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -12,7 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class OrderItemDao {
+
+    private final ProductDao productDao;
 
     public OrderItem save(OrderItem orderItem) throws SQLException {
         String insert = "INSERT INTO order_item (order_id, product_id, quantity, unit_price) " +
@@ -60,7 +64,10 @@ public class OrderItemDao {
                 ps.setLong(1, orderId);
                 try(ResultSet rs = ps.executeQuery()){
                     while(rs.next()){
-                        list.add(map(rs));
+                        OrderItem item = map(rs);
+                        Product product = productDao.findById(item.getProduct().getId()).get();
+                        item.setProduct(product);
+                        list.add(item);
                     }
                 }
             }
