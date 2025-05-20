@@ -41,7 +41,6 @@ public class OrderServiceImpl implements OrderService {
     private final EmailService emailService;
 
     @Override
-    @Transactional
     public OrderDto placeOrder(ShippingDetails shippingDetails,
                                PaymentDetails paymentDetails,
                                Principal principal) throws SQLException, MessagingException {
