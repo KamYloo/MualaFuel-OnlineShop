@@ -10,7 +10,9 @@ import com.example.MualaFuel_Backend.enums.OrderStatus;
 import com.example.MualaFuel_Backend.handler.BusinessErrorCodes;
 import com.example.MualaFuel_Backend.handler.CustomException;
 import com.example.MualaFuel_Backend.mapper.Mapper;
+import com.example.MualaFuel_Backend.service.EmailService;
 import com.example.MualaFuel_Backend.service.OrderService;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,12 +38,13 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemDao orderItemRepository;
     private final UserDao userRepository;
     private final Mapper<Order, OrderDto> mapper;
+    private final EmailService emailService;
 
     @Override
     @Transactional
     public OrderDto placeOrder(ShippingDetails shippingDetails,
                                PaymentDetails paymentDetails,
-                               Principal principal) throws SQLException {
+                               Principal principal) throws SQLException, MessagingException {
 
         List<CartItem> cartItems = cart.getItems();
         if (cartItems.isEmpty()) {
@@ -95,6 +98,7 @@ public class OrderServiceImpl implements OrderService {
 
         cart.clear();
 
+        emailService.sendOrderConfirmationEmail(savedOrder);
         return mapper.mapTo(savedOrder);
     }
 

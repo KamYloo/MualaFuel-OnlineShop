@@ -24,7 +24,7 @@ public class EmailHistory {
     private String subject;
 
     @Lob
-    @Column(nullable = false)
+    @Column(columnDefinition = "text", nullable = false)
     private String body;
 
     @Column(name = "sent_at", nullable = false)

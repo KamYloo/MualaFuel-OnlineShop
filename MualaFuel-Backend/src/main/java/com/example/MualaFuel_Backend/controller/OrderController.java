@@ -3,6 +3,7 @@ package com.example.MualaFuel_Backend.controller;
 import com.example.MualaFuel_Backend.dto.OrderDto;
 import com.example.MualaFuel_Backend.dto.OrderRequest;
 import com.example.MualaFuel_Backend.service.OrderService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class OrderController {
     public ResponseEntity<OrderDto> placeOrder(
             @RequestBody OrderRequest request,
             Principal principal
-    ) throws SQLException {
+    ) throws SQLException, MessagingException {
         OrderDto order = orderService.placeOrder(
                 request.shippingDetails(),
                 request.paymentDetails(),
