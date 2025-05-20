@@ -1,7 +1,7 @@
 package com.example.MualaFuel_Backend.mapper.impl;
 
-import com.example.MualaFuel_Backend.dto.EmailDto;
-import com.example.MualaFuel_Backend.entity.Email;
+import com.example.MualaFuel_Backend.dto.EmailHistoryDto;
+import com.example.MualaFuel_Backend.entity.EmailHistory;
 import com.example.MualaFuel_Backend.mapper.Mapper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class EmailMapper implements Mapper<Email, EmailDto>{
+public class EmailMapper implements Mapper<EmailHistory, EmailHistoryDto>{
     private ModelMapper modelMapper;
 
     @Override
-    public EmailDto mapTo(Email email) {
-        return modelMapper.map(email, EmailDto.class);
+    public EmailHistoryDto mapTo(EmailHistory emailHistory) {
+        return modelMapper.map(emailHistory, EmailHistoryDto.class);
     }
 
     @Override
-    public Email mapFrom(EmailDto emailDto) {return modelMapper.map(emailDto, Email.class);}
+    public EmailHistory mapFrom(EmailHistoryDto emailHistoryDto) {return modelMapper.map(emailHistoryDto, EmailHistory.class);}
 }

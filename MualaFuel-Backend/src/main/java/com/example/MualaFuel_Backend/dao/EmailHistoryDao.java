@@ -1,7 +1,7 @@
 package com.example.MualaFuel_Backend.dao;
 
 import com.example.MualaFuel_Backend.dto.request.EmailFilterRequest;
-import com.example.MualaFuel_Backend.entity.Email;
+import com.example.MualaFuel_Backend.entity.EmailHistory;
 import com.example.MualaFuel_Backend.entity.Order;
 import com.example.MualaFuel_Backend.factory.ConnectionFactory;
 import org.springframework.stereotype.Repository;
@@ -11,32 +11,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class EmailDao {
-    public Email save(Email email) throws SQLException {
+public class EmailHistoryDao {
+    public EmailHistory save(EmailHistory emailHistory) throws SQLException {
         String insert = "INSERT INTO email_history (recipient, subject, body, sent_at, related_order_id) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, email.getRecipient());
-            ps.setString(2, email.getSubject());
-            ps.setString(3, email.getBody());
-            ps.setTimestamp(4, Timestamp.valueOf(email.getSentAt()));
-            if (email.getOrder() != null) ps.setLong(5, email.getOrder().getId());
+            ps.setString(1, emailHistory.getRecipient());
+            ps.setString(2, emailHistory.getSubject());
+            ps.setString(3, emailHistory.getBody());
+            ps.setTimestamp(4, Timestamp.valueOf(emailHistory.getSentAt()));
+            if (emailHistory.getOrder() != null) ps.setLong(5, emailHistory.getOrder().getId());
             else ps.setNull(5, Types.BIGINT);
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
-                    email.setId(rs.getLong(1));
+                    emailHistory.setId(rs.getLong(1));
                 }
             }
         }
-        return email;
+        return emailHistory;
     }
 
-    public List<Email> findAll() throws SQLException {
+    public List<EmailHistory> findAll() throws SQLException {
         return findByFilter(new EmailFilterRequest(), 1, Integer.MAX_VALUE);
     }
 
-    public List<Email> findByFilter(EmailFilterRequest filter, int page, int size) throws SQLException {
+    public List<EmailHistory> findByFilter(EmailFilterRequest filter, int page, int size) throws SQLException {
         StringBuilder sql = new StringBuilder("SELECT * FROM email_history WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
@@ -61,7 +61,7 @@ public class EmailDao {
         params.add(size);
         params.add((long) (page - 1) * size);
 
-        List<Email> list = new ArrayList<>();
+        List<EmailHistory> list = new ArrayList<>();
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
@@ -85,8 +85,8 @@ public class EmailDao {
         }
     }
 
-    private Email map(ResultSet rs) throws SQLException {
-        Email email = Email.builder()
+    private EmailHistory map(ResultSet rs) throws SQLException {
+        EmailHistory emailHistory = EmailHistory.builder()
                 .id(rs.getLong("id"))
                 .recipient(rs.getString("recipient"))
                 .subject(rs.getString("subject"))
@@ -97,8 +97,8 @@ public class EmailDao {
         if (!rs.wasNull()) {
             Order order = new Order();
             order.setId(orderId);
-            email.setOrder(order);
+            emailHistory.setOrder(order);
         }
-        return email;
+        return emailHistory;
     }
 }

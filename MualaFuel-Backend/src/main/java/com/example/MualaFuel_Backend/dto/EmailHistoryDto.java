@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmailDto {
+public class EmailHistoryDto {
     private Long id;
     private String recipient;
     private String subject;

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Potwierdzenie zamówienia</title>
+</head>
+<body>
+<p>Witaj <span th:text="${userName}">Klient</span>,</p>
+<p>Dziękujemy za Twoje zamówienie nr <strong th:text="${order.id}"></strong> z dnia <span th:text="${order.orderDate}"></span>.</p>
+<h3>Podsumowanie:</h3>
+<ul>
+    <li th:each="item : ${items}">
+        <span th:text="${item.product.name}"></span> &ndash; ilość: <span th:text="${item.quantity}"></span>, cena jedn.: <span th:text="${item.unitPrice}"></span>
+    </li>
+</ul>
+<p><strong>Łączna kwota: </strong><span th:text="${total}"></span> PLN</p>
+<p>Pozdrawiamy,<br />Zespół MualaFuel</p>
+</body>
+</html>
