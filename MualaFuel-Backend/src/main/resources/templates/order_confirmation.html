@@ -1,19 +1,111 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="pl">
 <head>
     <meta charset="UTF-8" />
-    <title>Potwierdzenie zamówienia</title>
+    <title>Potwierdzenie zamówienia - MualaFuel</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5e9dc;
+            color: #3E2723;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #3E2723;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .order-summary {
+            background-color: #f9f4ef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .order-summary h3 {
+            margin-top: 0;
+            color: #3E2723;
+        }
+
+        .order-summary ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .order-summary li {
+            margin: 10px 0;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #6e4c3d;
+        }
+    </style>
 </head>
 <body>
-<p>Witaj <span th:text="${userName}">Klient</span>,</p>
-<p>Dziękujemy za Twoje zamówienie nr <strong th:text="${order.id}"></strong> z dnia <span th:text="${order.orderDate}"></span>.</p>
-<h3>Podsumowanie:</h3>
-<ul>
-    <li th:each="item : ${items}">
-        <span th:text="${item.product.name}"></span> &ndash; ilość: <span th:text="${item.quantity}"></span>, cena jedn.: <span th:text="${item.unitPrice}"></span>
-    </li>
-</ul>
-<p><strong>Łączna kwota: </strong><span th:text="${total}"></span> PLN</p>
-<p>Pozdrawiamy,<br />Zespół MualaFuel</p>
+<div class="container">
+    <div class="header">
+        <h1>MualaFuel</h1>
+        <p>Dziękujemy za Twoje zamówienie!</p>
+    </div>
+    <div class="content">
+        <p>Witaj <strong th:text="${userName}">Klient</strong>,</p>
+        <p>Dziękujemy za Twoje zamówienie z dnia <span th:text="${order.orderDate}"></span>.</p>
+
+        <div class="order-summary">
+            <h3>Szczegóły zamówienia:</h3>
+            <ul>
+                <li th:each="item : ${items}">
+                    <strong th:text="${item.product.name}">Produkt</strong><br />
+                    Ilość: <span th:text="${item.quantity}"></span> <br />
+                    Cena jednostkowa: <span th:text="${item.unitPrice}"></span> PLN<br />
+                    Łącznie: <span th:text="${#numbers.formatDecimal(item.unitPrice * item.quantity, 1, 'POINT', 2, 'POINT')}"></span> PLN
+                </li>
+            </ul>
+            <p><strong>Łączna kwota: </strong><span th:text="${total}"></span> PLN</p>
+        </div>
+
+        <h3>Dane dostawy:</h3>
+        <p>
+            <span th:text="${order.address.shipping_street}"></span><br />
+            <span th:text="${order.address.shipping_zipCode}"></span>
+            <span th:text="${order.address.shipping_city}"></span><br />
+            <span th:text="${order.address.shipping_country}"></span>
+        </p>
+
+        <h3>Metoda płatności:</h3>
+        <p>
+            <strong th:text="${order.paymentDetails.payment_method}"></strong><br />
+            Status: <span th:text="${order.paymentDetails.payment_status}"></span>
+        </p>
+
+        <p class="footer">W razie pytań, skontaktuj się z nami pod adresem <a href="mailto:support@muala-fuel.com">support@muala-fuel.com</a></p>
+        <p class="footer">Zespół MualaFuel 🍺</p>
+    </div>
+</div>
 </body>
 </html>

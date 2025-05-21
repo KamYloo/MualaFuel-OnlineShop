@@ -41,7 +41,7 @@ public class EmailServiceImpl implements EmailService {
         ctx.setVariable("order", order);
         ctx.setVariable("items", order.getOrderItems());
         ctx.setVariable("total", order.getTotalAmount());
-        ctx.setVariable("userName", order.getUser().getName());
+        ctx.setVariable("userName", order.getUser().getFirstName() + " " + order.getUser().getLastName());
 
         String htmlBody = templateEngine.process(
                 EmailTemplateName.ORDER_CONFIRMATION.getName(),
