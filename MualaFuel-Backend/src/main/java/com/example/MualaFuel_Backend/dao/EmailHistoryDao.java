@@ -151,6 +151,18 @@ public class EmailHistoryDao {
             countSql.append(" sent_at <= ?");
             params.add(Timestamp.valueOf(filter.getTo()));
         }
+        if (filter.getRelatedToOrder() != null) {
+            appendWhereOrAnd(sql, params);
+            appendWhereOrAnd(countSql, params);
+
+            if (filter.getRelatedToOrder()) {
+                sql.append(" related_order_id IS NOT NULL");
+                countSql.append(" related_order_id IS NOT NULL");
+            } else {
+                sql.append(" related_order_id IS NULL");
+                countSql.append(" related_order_id IS NULL");
+            }
+        }
     }
 
     private void appendWhereOrAnd(StringBuilder sql, List<Object> params) {

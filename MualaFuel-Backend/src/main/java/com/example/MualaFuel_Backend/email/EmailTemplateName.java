@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum EmailTemplateName {
-    ORDER_CONFIRMATION("order_confirmation");
+    ORDER_CONFIRMATION("order_confirmation"),
+    CONTACT_FORM_EMAIL("contact_form_email");
 
     private final String name;
 

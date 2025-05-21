@@ -1,5 +1,6 @@
 package com.example.MualaFuel_Backend.service.impl;
 
+import com.example.MualaFuel_Backend.dto.request.ContactRequest;
 import com.example.MualaFuel_Backend.email.EmailTemplateName;
 import com.example.MualaFuel_Backend.entity.EmailHistory;
 import com.example.MualaFuel_Backend.entity.Order;
@@ -66,5 +67,43 @@ public class EmailServiceImpl implements EmailService {
                 .build();
 
         emailHistoryService.saveEmailHistory(emailHistoryRecord);
+    }
+
+    @Override
+    @Async("emailExecutor")
+    public void sendContactFormEmail(ContactRequest contactFormRequest) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(
+                message,
+                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                StandardCharsets.UTF_8.name()
+        );
+
+        Context ctx = new Context();
+        ctx.setVariable("name", contactFormRequest.getName());
+        ctx.setVariable("email", contactFormRequest.getEmail());
+        ctx.setVariable("subject", contactFormRequest.getSubject());
+        ctx.setVariable("message", contactFormRequest.getMessage());
+
+        String htmlBody = templateEngine.process(
+                EmailTemplateName.CONTACT_FORM_EMAIL.getName(),
+                ctx
+        );
+
+        helper.setTo("kontakt@muala-fuel.com");
+        helper.setSubject(contactFormRequest.getSubject());
+        helper.setText(htmlBody, true);
+        helper.setFrom("no-reply@muala-fuel.com");
+
+        mailSender.send(message);
+
+        EmailHistory emailHistory = EmailHistory.builder()
+                .recipient("kontakt@muala-fuel.com")
+                .subject("Wiadomość z formularza kontaktowego: " + contactFormRequest.getSubject())
+                .body(htmlBody)
+                .sentAt(LocalDateTime.now())
+                .build();
+
+        emailHistoryService.saveEmailHistory(emailHistory);
     }
 }

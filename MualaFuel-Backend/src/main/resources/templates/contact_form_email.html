@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <title>Nowa wiadomość kontaktowa - MualaFuel</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5e9dc;
+            color: #3E2723;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #3E2723;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #6e4c3d;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>MualaFuel</h1>
+        <p>Nowa wiadomość z formularza kontaktowego</p>
+    </div>
+    <div class="content">
+        <p><strong>Imię i nazwisko:</strong> <span th:text="${name}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${email}"></span></p>
+        <p><strong>Temat:</strong> <span th:text="${subject}"></span></p>
+        <p><strong>Treść wiadomości:</strong></p>
+        <p th:text="${message}"></p>
+
+        <p class="footer">Ten e-mail został wygenerowany automatycznie przez system MualaFuel.</p>
+    </div>
+</div>
+</body>
+</html>
