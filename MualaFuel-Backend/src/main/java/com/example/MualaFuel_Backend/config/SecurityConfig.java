@@ -52,6 +52,13 @@ public class SecurityConfig implements WebMvcConfigurer {
                             auth.requestMatchers("/emailHistory/**")
                                     .hasAnyAuthority("ADMIN", "SUPPORT");
 
+
+                            auth.requestMatchers(HttpMethod.PUT,    "/orders/*")
+                                    .hasAnyAuthority("ADMIN","SUPPORT");
+                            auth.requestMatchers(HttpMethod.DELETE, "/orders/*")
+                                    .hasAnyAuthority("ADMIN","SUPPORT");
+
+
 //                            auth.requestMatchers(
 //
 //                            ).hasAuthority("USER");
