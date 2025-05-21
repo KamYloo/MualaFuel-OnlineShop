@@ -16,7 +16,6 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 @Service
@@ -29,7 +28,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     @Async("emailExecutor")
-    public void sendOrderConfirmationEmail(Order order) throws MessagingException, SQLException {
+    public void sendOrderConfirmationEmail(Order order) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(
                 message,

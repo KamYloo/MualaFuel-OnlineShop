@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class EmailMapper implements Mapper<EmailHistory, EmailHistoryDto>{
+public class EmailHistoryMapper implements Mapper<EmailHistory, EmailHistoryDto>{
     private ModelMapper modelMapper;
 
     @Override
