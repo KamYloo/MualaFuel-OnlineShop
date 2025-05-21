@@ -5,3 +5,7 @@ SELECT 1, 'ADMIN'
 INSERT INTO role (id, name)
 SELECT 2, 'USER'
     WHERE NOT EXISTS (SELECT 1 FROM role WHERE id = 2);
+
+INSERT INTO role (id, name)
+SELECT 3, 'SUPPORT'
+    WHERE NOT EXISTS (SELECT 1 FROM role WHERE id = 3);

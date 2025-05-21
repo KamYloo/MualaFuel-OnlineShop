@@ -9,4 +9,5 @@ import org.springframework.data.domain.Pageable;
 public interface EmailHistoryService {
     void saveEmailHistory(EmailHistory emailHistory);
     Page<EmailHistoryDto> getEmailHistories(Pageable pageable, EmailFilterRequest filter);
+    void deleteEmailHistory(Long id);
 }
