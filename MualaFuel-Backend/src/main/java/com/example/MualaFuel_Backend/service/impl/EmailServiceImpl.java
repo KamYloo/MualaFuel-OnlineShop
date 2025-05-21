@@ -99,7 +99,7 @@ public class EmailServiceImpl implements EmailService {
 
         EmailHistory emailHistory = EmailHistory.builder()
                 .recipient("kontakt@muala-fuel.com")
-                .subject("Wiadomość z formularza kontaktowego: " + contactFormRequest.getSubject())
+                .subject(contactFormRequest.getSubject())
                 .body(htmlBody)
                 .sentAt(LocalDateTime.now())
                 .build();
