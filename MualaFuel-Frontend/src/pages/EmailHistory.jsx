@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { format } from 'date-fns';
-import { deleteEmail, fetchEmails } from '../redux/EmailService/Action.js';
+import {
+    deleteEmail,
+    fetchEmails,
+    fetchEmailBody
+} from '../redux/EmailService/Action.js';
+import { EmailPreview } from "../features/EmailHistory/EmailPreview.jsx";
 
 export function EmailHistory() {
     const dispatch = useDispatch();
-    const { emails, pageInfo, loading, error } = useSelector(state => state.emailServ);
+    const { emails, pageInfo, loading, error, previewBody, previewLoading, previewError } = useSelector(state => state.emailServ);
 
     const [filters, setFilters] = useState({
         recipient: '',
@@ -16,8 +21,8 @@ export function EmailHistory() {
     });
 
     const [appliedFilters, setAppliedFilters] = useState(filters);
-
     const [page, setPage] = useState(0);
+    const [showPreview, setShowPreview] = useState(false);
 
     useEffect(() => {
         const params = {
@@ -49,6 +54,11 @@ export function EmailHistory() {
         if (window.confirm('Are you sure you want to delete this email?')) {
             dispatch(deleteEmail(id));
         }
+    };
+
+    const handlePreviewClick = id => {
+        dispatch(fetchEmailBody(id));
+        setShowPreview(true);
     };
 
     if (loading) return <div>Loading...</div>;
@@ -106,31 +116,37 @@ export function EmailHistory() {
 
                 <table className="w-full table-auto mb-4">
                     <thead>
-                        <tr className="bg-[#3E2723] text-white">
-                            {['ID', 'Recipient', 'Subject', 'Sent At', 'Actions'].map(text => (
-                                <th key={text} className="px-4 py-2">{text}</th>
-                            ))}
-                        </tr>
+                    <tr className="bg-[#3E2723] text-white">
+                        {['ID', 'Recipient', 'Subject', 'Sent At', 'Actions'].map(text => (
+                            <th key={text} className="px-4 py-2">{text}</th>
+                        ))}
+                    </tr>
                     </thead>
                     <tbody>
-                        {emails.map(email => (
-                            <tr key={email.id} className="text-center border-b">
-                                <td className="px-4 py-2">{email.id}</td>
-                                <td className="px-4 py-2">{email.recipient}</td>
-                                <td className="px-4 py-2">{email.subject}</td>
-                                <td className="px-4 py-2">
-                                    {format(new Date(email.sentAt), 'yyyy-MM-dd HH:mm')}
-                                </td>
-                                <td className="px-4 py-2">
-                                    <button
-                                        onClick={() => handleDeleteClick(email.id)}
-                                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors"
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                    {emails.map(email => (
+                        <tr key={email.id} className="text-center border-b">
+                            <td className="px-4 py-2">{email.id}</td>
+                            <td className="px-4 py-2">{email.recipient}</td>
+                            <td className="px-4 py-2">{email.subject}</td>
+                            <td className="px-4 py-2">
+                                {format(new Date(email.sentAt), 'yyyy-MM-dd HH:mm')}
+                            </td>
+                            <td className="px-4 py-2">
+                                <button
+                                    onClick={() => handlePreviewClick(email.id)}
+                                    className="bg-[#3E2723] text-white px-3 py-1 rounded-lg hover:bg-[#4E3423] transition-colors mr-2"
+                                >
+                                    Preview
+                                </button>
+                                <button
+                                    onClick={() => handleDeleteClick(email.id)}
+                                    className="bg-[#3E2723] text-white px-3 py-1 rounded-lg hover:bg-[#4E3423] transition-colors"
+                                >
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
                     </tbody>
                 </table>
 
@@ -152,6 +168,14 @@ export function EmailHistory() {
                     </button>
                 </div>
             </div>
+
+            <EmailPreview
+                show={showPreview}
+                onClose={() => setShowPreview(false)}
+                loading={previewLoading}
+                error={previewError}
+                htmlContent={previewBody}
+            />
         </div>
     );
 }

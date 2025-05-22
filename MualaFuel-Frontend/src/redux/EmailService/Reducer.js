@@ -1,6 +1,10 @@
 import {
     DELETE_EMAIL_ERROR,
-    DELETE_EMAIL_REQUEST, DELETE_EMAIL_SUCCESS,
+    DELETE_EMAIL_REQUEST,
+    DELETE_EMAIL_SUCCESS,
+    FETCH_EMAIL_BODY_ERROR,
+    FETCH_EMAIL_BODY_REQUEST,
+    FETCH_EMAIL_BODY_SUCCESS,
     FETCH_EMAILS_ERROR,
     FETCH_EMAILS_REQUEST,
     FETCH_EMAILS_SUCCESS,
@@ -18,6 +22,9 @@ const initialState = {
     pageInfo: { totalPages: 0, page: 0, size: 10 },
     deleting: false,
     deleteError: null,
+    previewLoading: false,
+    previewError: null,
+    previewBody: '',
 };
 
 export const emailReducer = (state = initialState, action) => {
@@ -47,6 +54,16 @@ export const emailReducer = (state = initialState, action) => {
 
         case FETCH_EMAILS_ERROR:
             return { ...state, loading: false, error: action.payload };
+
+
+        case FETCH_EMAIL_BODY_REQUEST:
+            return { ...state, previewLoading: true, previewError: null };
+
+        case FETCH_EMAIL_BODY_SUCCESS:
+            return { ...state, previewLoading: false, previewBody: action.payload };
+
+        case FETCH_EMAIL_BODY_ERROR:
+            return { ...state, previewLoading: false, previewError: action.payload };
 
         case DELETE_EMAIL_REQUEST:
             return { ...state, deleting: true, deleteError: null };

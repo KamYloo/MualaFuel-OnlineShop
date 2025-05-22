@@ -33,6 +33,13 @@ public class EmailHistoryServiceImpl implements EmailHistoryService {
     }
 
     @Override
+    public String getEmailBodyById(Long id) {
+        EmailHistory emailHistory = emailHistoryRepository.findById(id).orElseThrow(
+                () -> new CustomException(BusinessErrorCodes.EMAIL_HISTORY_NOT_FOUND));
+        return emailHistory.getBody();
+    }
+
+    @Override
     @Transactional
     public void deleteEmailHistory(Long id) {
         EmailHistory existing = emailHistoryRepository.findById(id).orElseThrow(

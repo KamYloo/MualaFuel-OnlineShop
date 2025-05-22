@@ -23,6 +23,13 @@ public class EmailHistoryController {
         return ResponseEntity.ok(page);
     }
 
+    @GetMapping("/{id}/body")
+    public ResponseEntity<String> getEmailBodyById(@PathVariable Long id) {
+        String body = emailHistoryService.getEmailBodyById(id);
+        return ResponseEntity.ok(body);
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEmailHistory(@PathVariable Long id) {
         emailHistoryService.deleteEmailHistory(id);

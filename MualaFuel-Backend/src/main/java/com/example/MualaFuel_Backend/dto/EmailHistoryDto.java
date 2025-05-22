@@ -14,6 +14,5 @@ public class EmailHistoryDto {
     private Long id;
     private String recipient;
     private String subject;
-    private String body;
     private LocalDateTime sentAt;
 }

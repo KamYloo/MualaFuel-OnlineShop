@@ -54,6 +54,14 @@ function Navbar() {
         { name: "Orders", path: "orders" },
     ];
 
+    // Add Emails tab for ADMIN and SUPPORT roles
+    if (auth.reqUser) {
+        const roles = Array.from(auth.reqUser.roles || []);
+        if (roles.some(role => role.name === "ADMIN" || role.name === "SUPPORT")) {
+            tabs.push({ name: "Emails", path: "emailsHistory" });
+        }
+    }
+
     return (
         <header className="bg-[#3E2723] h-24 flex items-center px-8 relative shadow-md shadow-[#00000088]">
             <div className="flex items-center">
