@@ -8,13 +8,18 @@ export const EmailPreview = ({ show, onClose, htmlContent }) => {
             onClick={onClose}
         >
             <div
-                className="bg-white p-5 rounded-lg max-w-4xl max-h-[80%] overflow-y-auto"
+                className="bg-white p-8 rounded-lg w-full max-w-[1200px] max-h-[80%] overflow-y-auto shadow-xl"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+                <iframe
+                    srcDoc={htmlContent}
+                    title="Email Preview"
+                    className="w-full h-[600px]"
+                    style={{ border: "none" }}
+                />
                 <button
                     onClick={onClose}
-                    className="block mx-auto mt-6 bg-[#3E2723] text-white px-4 py-2 rounded-lg hover:bg-[#4E3423] transition-colors"
+                    className="block mx-auto mt-6 bg-[#3E2723] text-white px-6 py-2 rounded-lg hover:bg-[#4E3423] transition-colors"
                 >
                     Close
                 </button>
