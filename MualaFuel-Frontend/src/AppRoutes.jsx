@@ -8,6 +8,8 @@ import {Orders} from "./pages/Orders.jsx";
 import {Cart} from "./pages/Cart.jsx";
 import {NoLayout} from "./layout/NoLayout.jsx";
 import {Layout} from "./layout/Layout.jsx";
+import {ProtectedRoute} from "./ProtectedRoute.jsx";
+import {EmailHistory} from "./pages/EmailHistory.jsx";
 
 function AppRoutes() {
     return (
@@ -25,6 +27,14 @@ function AppRoutes() {
                     <Route path="/assortment" element={<Assortment />} />
                     <Route path="/orders" element={<Orders />} />
                     <Route path="/cart" element={<Cart />} />
+                    <Route
+                        path="/emailsHistory"
+                        element={
+                            <ProtectedRoute allowedRoles={["ADMIN", "SUPPORT"]}>
+                                <EmailHistory />
+                            </ProtectedRoute>
+                        }
+                    />
                 </Route>
 
             </Routes>

@@ -46,23 +46,38 @@ export const dispatchAction = async (
     options = {}
 ) => {
     dispatch({ type: requestType });
+
+    let finalUrl = url;
+    if (options.params) {
+        const clean = Object.entries(options.params)
+            .filter(([, v]) => v !== undefined && v !== null && v !== '')
+            .reduce((acc, [k, v]) => {
+                acc[k] = v;
+                return acc;
+            }, {});
+        const qs = new URLSearchParams(clean).toString();
+        finalUrl = qs ? `${url}?${qs}` : url;
+        delete options.params;
+    }
+
     try {
-        const result = await fetchWithAuth(url, options, requestType);
+        const result = await fetchWithAuth(finalUrl, options, requestType);
         if (result.error) {
             dispatch({ type: errorType, payload: result.message });
             throw new Error(result.message);
         }
         dispatch({ type: successType, payload: result });
+
         if (successType === LOGIN_SUCCESS) {
             localStorage.setItem("isLoggedIn", "1");
-        }
-
-        if (successType === LOGOUT_SUCCESS) {
+        } else if (successType === LOGOUT_SUCCESS) {
             localStorage.removeItem("isLoggedIn");
         }
+
         return result;
     } catch (err) {
         dispatch({ type: errorType, payload: err.message });
         throw err;
     }
 };
+

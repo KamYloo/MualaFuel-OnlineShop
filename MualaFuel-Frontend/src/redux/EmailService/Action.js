@@ -1,5 +1,14 @@
 import {dispatchAction} from "../api.js";
-import {SEND_CONTACT_ERROR, SEND_CONTACT_REQUEST, SEND_CONTACT_SUCCESS} from "./ActionType.js";
+import {
+    DELETE_EMAIL_ERROR,
+    DELETE_EMAIL_REQUEST, DELETE_EMAIL_SUCCESS,
+    FETCH_EMAILS_ERROR,
+    FETCH_EMAILS_REQUEST,
+    FETCH_EMAILS_SUCCESS,
+    SEND_CONTACT_ERROR,
+    SEND_CONTACT_REQUEST,
+    SEND_CONTACT_SUCCESS
+} from "./ActionType.js";
 
 export const sendContactAction = (data) => async (dispatch) => {
     await dispatchAction(
@@ -14,3 +23,17 @@ export const sendContactAction = (data) => async (dispatch) => {
         }
     );
 };
+
+
+export const fetchEmails = (params) => async (dispatch) => {
+    await dispatchAction(dispatch, FETCH_EMAILS_REQUEST, FETCH_EMAILS_SUCCESS, FETCH_EMAILS_ERROR, `/emailHistory/all`, {
+        method: 'GET',
+        params
+    });
+}
+
+export const deleteEmail = (id) => async (dispatch) => {
+    await dispatchAction(dispatch, DELETE_EMAIL_REQUEST, DELETE_EMAIL_SUCCESS, DELETE_EMAIL_ERROR, `/emailHistory/${id}`, {
+        method: 'DELETE',
+    });
+}
