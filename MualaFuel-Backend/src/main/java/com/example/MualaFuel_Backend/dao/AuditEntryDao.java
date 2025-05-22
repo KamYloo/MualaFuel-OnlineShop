@@ -12,16 +12,17 @@ import java.sql.Timestamp;
 @Repository
 public class AuditEntryDao {
     private static final String SQL =
-            "INSERT INTO audit_entry (event_type, source, details, created_at) VALUES (?, ?, ?, ?)";
+            "INSERT INTO audit_entry (level, event_type, source, details, created_at) VALUES (?, ?, ?, ?, ?)";
 
     public void save(AuditEntry e) {
         try (Connection c = ConnectionFactory.getConnection();
-            PreparedStatement ps = c.prepareStatement(SQL)) {
+             PreparedStatement ps = c.prepareStatement(SQL)) {
             c.setAutoCommit(false);
-            ps.setString(1, e.getEventType());
-            ps.setString(2, e.getSource());
-            ps.setString(3, e.getDetails());
-            ps.setTimestamp(4, Timestamp.valueOf(e.getCreatedAt()));
+            ps.setString(1, e.getLevel().name());
+            ps.setString(2, e.getEventType());
+            ps.setString(3, e.getSource());
+            ps.setString(4, e.getDetails());
+            ps.setTimestamp(5, Timestamp.valueOf(e.getCreatedAt()));
             ps.executeUpdate();
             c.commit();
         } catch (SQLException ex) {

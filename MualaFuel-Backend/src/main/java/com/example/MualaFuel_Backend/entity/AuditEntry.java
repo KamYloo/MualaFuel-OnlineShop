@@ -1,5 +1,6 @@
 package com.example.MualaFuel_Backend.entity;
 
+import com.example.MualaFuel_Backend.enums.AuditLevel;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,8 +13,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class AuditEntry {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private AuditLevel level;
 
     @Column(nullable = false, length = 100)
     private String eventType;
