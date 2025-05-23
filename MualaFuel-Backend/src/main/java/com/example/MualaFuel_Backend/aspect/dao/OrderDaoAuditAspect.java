@@ -1,6 +1,6 @@
-package com.example.MualaFuel_Backend.aspect;
+package com.example.MualaFuel_Backend.aspect.dao;
 
-import com.example.MualaFuel_Backend.entity.EmailHistory;
+import com.example.MualaFuel_Backend.entity.Order;
 import com.example.MualaFuel_Backend.enums.AuditLevel;
 import com.example.MualaFuel_Backend.service.AuditService;
 import lombok.RequiredArgsConstructor;
@@ -14,28 +14,28 @@ import java.util.stream.Collectors;
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class EmailHistoryAuditAspect {
+public class OrderDaoAuditAspect {
+
     private final AuditService auditService;
 
     @AfterReturning(
-            pointcut = "execution(* com.example.MualaFuel_Backend.dao.EmailHistoryDao.save(..))",
+            pointcut = "execution(* com.example.MualaFuel_Backend.dao.OrderDao.save(..))",
             returning = "saved")
-    public void onSave(JoinPoint jp, Object saved) {
-        EmailHistory e = (EmailHistory) saved;
+    public void logSave(JoinPoint jp, Object saved) {
+        Order o = (Order) saved;
         auditService.log(
-                "EMAIL_HISTORY_SAVED",
+                "ORDER_DAO_SAVED",
                 AuditLevel.INFO,
                 jp.getSignature().toShortString(),
-                "id=" + e.getId()
-                        + ", recipient=" + e.getRecipient()
-                        + ", subject=" + e.getSubject()
+                "id=" + o.getId() + ", status=" + o.getStatus()
         );
     }
 
-    @After("execution(* com.example.MualaFuel_Backend.dao.EmailHistoryDao.delete(..)) && args(id)")
-    public void onDelete(JoinPoint jp, Long id) {
+    @AfterReturning(
+            pointcut = "execution(* com.example.MualaFuel_Backend.dao.OrderDao.delete(..)) && args(id)")
+    public void logDelete(JoinPoint jp, Long id) {
         auditService.log(
-                "EMAIL_HISTORY_DELETED",
+                "ORDER_DAO_DELETED",
                 AuditLevel.INFO,
                 jp.getSignature().toShortString(),
                 "id=" + id
@@ -43,17 +43,17 @@ public class EmailHistoryAuditAspect {
     }
 
     @AfterThrowing(
-            pointcut = "execution(* com.example.MualaFuel_Backend.dao.EmailHistoryDao.*(..))",
+            pointcut = "execution(* com.example.MualaFuel_Backend.dao.OrderDao.*(..))",
             throwing = "ex")
-    public void onDaoError(JoinPoint jp, Throwable ex) {
+    public void logError(JoinPoint jp, Throwable ex) {
         String args = Arrays.stream(jp.getArgs())
                 .map(Object::toString)
                 .collect(Collectors.joining(", "));
         auditService.log(
-                "EMAIL_HISTORY_DAO_ERROR",
+                "ORDER_DAO_ERROR",
                 AuditLevel.ERROR,
                 jp.getSignature().toShortString(),
-                "args=[" + args + "], error=" + ex.getClass().getSimpleName() + ": " + ex.getMessage()
+                "args=[" + args + "], error=" + ex.getClass().getSimpleName()
         );
     }
 }
