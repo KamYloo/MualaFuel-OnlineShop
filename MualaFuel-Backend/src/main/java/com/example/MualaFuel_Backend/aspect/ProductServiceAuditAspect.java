@@ -1,6 +1,6 @@
-package com.example.MualaFuel_Backend.aspect.dao;
+package com.example.MualaFuel_Backend.aspect;
 
-import com.example.MualaFuel_Backend.entity.Product;
+import com.example.MualaFuel_Backend.dto.ProductDto;
 import com.example.MualaFuel_Backend.enums.AuditLevel;
 import com.example.MualaFuel_Backend.service.AuditService;
 import lombok.RequiredArgsConstructor;
@@ -14,17 +14,17 @@ import java.util.stream.Collectors;
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class ProductDaoAuditAspect {
+public class ProductServiceAuditAspect {
 
     private final AuditService auditService;
 
     @AfterReturning(
-            pointcut = "execution(* com.example.MualaFuel_Backend.dao.ProductDao.save(..))",
-            returning = "saved")
-    public void logSave(JoinPoint jp, Object saved) {
-        Product p = (Product) saved;
+            pointcut = "execution(* com.example.MualaFuel_Backend.service.impl.ProductServiceImpl.save(..))",
+            returning = "dto")
+    public void logServiceSave(JoinPoint jp, Object dto) {
+        ProductDto p = (ProductDto) dto;
         auditService.log(
-                "PRODUCT_CREATED",
+                "PRODUCT_SERVICE_SAVED",
                 AuditLevel.INFO,
                 jp.getSignature().toShortString(),
                 "id=" + p.getId() + ", name=" + p.getName()
@@ -32,42 +32,44 @@ public class ProductDaoAuditAspect {
     }
 
     @AfterReturning(
-            pointcut = "execution(* com.example.MualaFuel_Backend.dao.ProductDao.update(..))",
-            returning = "updated")
-    public void logUpdate(JoinPoint jp, Object updated) {
-        Product p = (Product) updated;
+            pointcut = "execution(* com.example.MualaFuel_Backend.service.impl.ProductServiceImpl.update(..))",
+            returning = "dto")
+    public void logServiceUpdate(JoinPoint jp, Object dto) {
+        ProductDto p = (ProductDto) dto;
         auditService.log(
-                "PRODUCT_UPDATED",
+                "PRODUCT_SERVICE_UPDATED",
                 AuditLevel.INFO,
                 jp.getSignature().toShortString(),
                 "id=" + p.getId() + ", name=" + p.getName()
         );
     }
 
-    @After("execution(* com.example.MualaFuel_Backend.dao.ProductDao.delete(..)) && args(id)")
-    public void logDelete(JoinPoint jp, Long id) {
+    @AfterReturning(
+            pointcut = "execution(* com.example.MualaFuel_Backend.service.impl.ProductServiceImpl.updateImage(..))",
+            returning = "dto")
+    public void logServiceUpdateImage(JoinPoint jp, Object dto) {
+        ProductDto p = (ProductDto) dto;
         auditService.log(
-                "PRODUCT_DELETED",
+                "PRODUCT_IMAGE_UPDATED",
                 AuditLevel.INFO,
                 jp.getSignature().toShortString(),
-                "id=" + id
+                "id=" + p.getId() + ", imagePath=" + p.getImagePath()
         );
     }
 
     @AfterThrowing(
-            pointcut = "execution(* com.example.MualaFuel_Backend.dao.ProductDao.*(..))",
+            pointcut = "execution(* com.example.MualaFuel_Backend.service.impl.ProductServiceImpl.*(..))",
             throwing = "ex")
-    public void logDaoError(JoinPoint jp, Throwable ex) {
+    public void logServiceError(JoinPoint jp, Throwable ex) {
         String args = Arrays.stream(jp.getArgs())
                 .map(Object::toString)
                 .collect(Collectors.joining(", "));
         auditService.log(
-                "PRODUCT_DAO_ERROR",
+                "PRODUCT_SERVICE_ERROR",
                 AuditLevel.ERROR,
                 jp.getSignature().toShortString(),
                 "args=[" + args + "], error="
                         + ex.getClass().getSimpleName()
-                        + ": " + ex.getMessage()
         );
     }
 }

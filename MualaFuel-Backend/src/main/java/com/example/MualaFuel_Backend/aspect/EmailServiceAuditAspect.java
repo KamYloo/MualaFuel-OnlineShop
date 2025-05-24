@@ -1,4 +1,4 @@
-package com.example.MualaFuel_Backend.aspect.service;
+package com.example.MualaFuel_Backend.aspect;
 
 import com.example.MualaFuel_Backend.dto.request.ContactRequest;
 import com.example.MualaFuel_Backend.entity.Order;
