@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { 
+    fetchCartAction, 
+    removeItemAction, 
+    updateQuantityAction, 
+    placeOrderFromCartAction 
+} from "../redux/CartService/Action.js";
 
 function Cart() {
-    const [cartData, setCartData] = useState({
-        items: [],
-        totalPrice: 0
-    });
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+    const { cart, loading, error, orderPlaceSuccess, removing, updateLoading} = useSelector((state) => state.cartService);
     const [showCheckoutForm, setShowCheckoutForm] = useState(false);
     const [orderData, setOrderData] = useState({
         shippingDetails: {
@@ -22,84 +24,23 @@ function Cart() {
         }
     });
 
-    const fetchCartData = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get("http://localhost:8080/api/cart", {
-                withCredentials: true
-            });
-            setCartData(response.data);
-            setError(null);
-        } catch (error) {
-            console.error("Error fetching cart data:", error);
-            setError("Failed to load cart data");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const removeItem = async (productId) => {
-        try {
-            await axios.delete(`http://localhost:8080/api/cart/items/${productId}`, {
-                withCredentials: true
-            });
-            fetchCartData();
-        } catch (error) {
-            console.error("Error removing item:", error);
-        }
-    };
-
-    const updateQuantity = async (productId, newQuantity) => {
-        if (newQuantity < 1) return;
-
-        try {
-            await axios.put(
-                "http://localhost:8080/api/cart/items",
-                { productId, quantity: newQuantity },
-                { withCredentials: true }
-            );
-            fetchCartData();
-        } catch (error) {
-            console.error("Error updating quantity:", error);
-        }
-    };
-
-    const handleCheckout = async () => {
-        try {
-            const transactionId = `txn_${Math.random().toString(36).substr(2, 9)}`;
-
-            const orderRequest = {
-                shippingDetails: orderData.shippingDetails,
-                paymentDetails: {
-                    ...orderData.paymentDetails,
-                    payment_transactionId: transactionId
-                }
-            };
-
-            const response = await axios.post(
-                "http://localhost:8080/api/orders",
-                orderRequest,
-                {
-                    withCredentials: true,
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
-
-            console.log("Order placed successfully:", response.data);
-            fetchCartData();
-            setShowCheckoutForm(false);
-            alert("Order placed successfully!");
-        } catch (error) {
-            console.error("Error placing order:", error);
-            setError("Failed to place order");
-        }
-    };
-
     useEffect(() => {
-        fetchCartData();
-    }, []);
+        dispatch(fetchCartAction());
+    }, [dispatch, removing, orderPlaceSuccess, updateLoading]);
+
+    const handleCheckout = (e) => {
+        e.preventDefault();
+        const transactionId = `txn_${Math.random().toString(36).substr(2, 9)}`;
+        const orderRequest = {
+            shippingDetails: orderData.shippingDetails,
+            paymentDetails: {
+                ...orderData.paymentDetails,
+                payment_transactionId: transactionId
+            }
+        };
+        dispatch(placeOrderFromCartAction(orderRequest));
+        setShowCheckoutForm(false);
+    };
 
     if (loading) {
         return <div className="text-center p-8 text-gray-500">Loading cart...</div>;
@@ -110,75 +51,74 @@ function Cart() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto p-5">
-            <h2 className="text-2xl font-bold mb-6">Your Shopping Cart</h2>
-            {cartData.items.length === 0 ? (
-                <p className="text-gray-500 text-center">Your cart is currently empty</p>
-            ) : (
-                <>
-                    <div className="space-y-4">
-                        {cartData.items.map((item) => (
-                            <div key={item.productId} className="border-b border-gray-200 pb-4">
-                                <div className="flex justify-between items-start">
-                                    <h3 className="text-lg font-semibold">{item.productName}</h3>
-                                    <div className="flex items-center gap-4">
-                                        <p className="text-lg font-medium">
-                                            ${item.totalPrice.toFixed(2)}
-                                        </p>
-                                        <button
-                                            onClick={() => removeItem(item.productId)}
-                                            className="text-red-500 hover:text-red-700"
-                                        >
-                                            Remove
-                                        </button>
+        <div className="min-h-screen p-8" style={{ backgroundColor: "#f5e9dc" }}>
+            <div className="bg-white rounded-lg shadow-md p-6 max-w-4xl mx-auto">
+                <h2 className="text-3xl font-bold text-[#3E2723] mb-6">Your Shopping Cart</h2>
+                {cart.items.length === 0 ? (
+                    <p className="text-gray-500 text-center">Your cart is currently empty</p>
+                ) : (
+                    <>
+                        <div className="space-y-4">
+                            {cart.items.map((item) => (
+                                <div key={item.productId} className="bg-gray-50 rounded-lg shadow-sm p-4">
+                                    <div className="flex justify-between items-center">
+                                        <h3 className="text-xl font-semibold text-[#3E2723]">{item.productName}</h3>
+                                        <div className="flex items-center gap-4">
+                                            <p className="text-lg font-medium text-[#3E2723]">
+                                                ${item.totalPrice.toFixed(2)}
+                                            </p>
+                                            <button
+                                                onClick={() => dispatch(removeItemAction(item.productId))}
+                                                className="bg-[#3E2723] text-white px-3 py-1 rounded hover:bg-[#4E3423] transition-colors"
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4 mt-2 text-gray-600">
+                                        <p>Price: ${item.price.toFixed(2)}</p>
+                                        <div className="flex items-center border rounded">
+                                            <button
+                                                onClick={() => dispatch(updateQuantityAction(item.productId, item.quantity - 1))}
+                                                className="px-3 py-1 bg-white border-r hover:bg-gray-100 transition-colors"
+                                            >
+                                                -
+                                            </button>
+                                            <span className="px-3">{item.quantity}</span>
+                                            <button
+                                                onClick={() => dispatch(updateQuantityAction(item.productId, item.quantity + 1))}
+                                                className="px-3 py-1 bg-white border-l hover:bg-gray-100 transition-colors"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-4 mt-2 text-gray-600">
-                                    <p>Price: ${item.price.toFixed(2)}</p>
-                                    <div className="flex items-center border rounded">
-                                        <button
-                                            onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                                            className="px-3 py-1 hover:bg-gray-100"
-                                        >
-                                            -
-                                        </button>
-                                        <span className="px-3">{item.quantity}</span>
-                                        <button
-                                            onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                                            className="px-3 py-1 hover:bg-gray-100"
-                                        >
-                                            +
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="mt-6 pt-4 border-t border-gray-200">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-xl font-bold">Total Price:</h3>
-                            <p className="text-xl font-bold">
-                                ${cartData.totalPrice.toFixed(2)}
-                            </p>
+                            ))}
                         </div>
-                        <button
-                            onClick={() => setShowCheckoutForm(true)}
-                            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded"
-                        >
-                            Proceed to Checkout
-                        </button>
-                    </div>
-                </>
-            )}
+                        <div className="mt-6 pt-4 border-t border-gray-200">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-2xl font-bold text-[#3E2723]">Total Price:</h3>
+                                <p className="text-2xl font-bold text-[#3E2723]">
+                                    ${cart.totalPrice.toFixed(2)}
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setShowCheckoutForm(true)}
+                                className="w-full bg-[#3E2723] hover:bg-[#4E3423] text-white py-2 px-4 rounded transition-colors"
+                            >
+                                Proceed to Checkout
+                            </button>
+                        </div>
+                    </>
+                )}
+            </div>
 
             {showCheckoutForm && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <h2 className="text-xl font-bold mb-4">Checkout</h2>
-                        <form onSubmit={(e) => {
-                            e.preventDefault();
-                            handleCheckout();
-                        }}>
+                    <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
+                        <h2 className="text-2xl font-bold text-[#3E2723] mb-4">Checkout</h2>
+                        <form onSubmit={handleCheckout}>
                             <div className="mb-4">
                                 <label className="block text-gray-700 mb-2">Country</label>
                                 <input
@@ -266,13 +206,13 @@ function Cart() {
                                 <button
                                     type="button"
                                     onClick={() => setShowCheckoutForm(false)}
-                                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+                                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+                                    className="bg-[#3E2723] hover:bg-[#4E3423] text-white px-4 py-2 rounded transition-colors"
                                 >
                                     Place Order
                                 </button>

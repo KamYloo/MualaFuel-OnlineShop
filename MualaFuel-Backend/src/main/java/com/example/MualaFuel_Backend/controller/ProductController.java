@@ -25,8 +25,9 @@ public class ProductController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ProductDto> save(@RequestBody ProductDto product) {
-        return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
+    public ResponseEntity<ProductDto> save(@ModelAttribute ProductDto productDto,
+                                           @RequestPart(value = "image", required = false) MultipartFile image) {
+        return new ResponseEntity<>(productService.save(productDto, image), HttpStatus.CREATED);
     }
 
     @PostMapping("/update")
@@ -37,7 +38,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         productService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(id);
     }
 
     @GetMapping("/{id}")

@@ -1,34 +1,22 @@
-import Slider from "rc-slider";
 import React from "react";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 
-export function InputSlider({value, setValue, min, max}) {
-    return (
-        <div className="flex items-center">
-            <input type="number"
-                   className="w-14"
-                   min={min}
-                   max={max}
-                   onChange={(e) =>
-                       setValue([e.target.value, value[1]])}
-                   value={value[0]}
-            />
-            <Slider
-                className="mx-3"
-                range
-                min={min}
-                max={max}
-                allowCross={false}
-                onChange={(value) => setValue(value)}
-                value={value}
-            />
-            <input type="number"
-                   className="w-14"
-                   min={min}
-                   max={max}
-                   onChange={(e) =>
-                       setValue([value[0], e.target.value])}
-                   value={value[1]}
-            />
-        </div>
-    )
+export function InputSlider({ value, setValue, min, max }) {
+  return (
+    <div className="mx-3">
+      <div className="flex justify-between text-sm mb-1">
+        <span>{value[0]}</span>
+        <span>{value[1]}</span>
+      </div>
+      <Slider
+        range
+        min={min}
+        max={max}
+        allowCross={false}
+        value={value}
+        onChange={setValue}
+      />
+    </div>
+  );
 }

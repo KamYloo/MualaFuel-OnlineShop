@@ -2,20 +2,22 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineMenuFold } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
-import { FaUserCircle, FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
 import { BiDotsVerticalRounded } from "react-icons/bi";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import logo from "../assets/logo.png";
-import {logoutAction} from "../redux/AuthService/Action.js";
+import { logoutAction } from "../redux/AuthService/Action.js";
+import { AddProductForm } from "./AddProductForm.jsx";
 
 function Navbar() {
     const [isPanelVisible, setPanelVisible] = useState(false);
     const [isMenuOpen, setMenuOpen] = useState(false);
+    const [showAddProductForm, setShowAddProductForm] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {auth} = useSelector(store => store);
+    const { auth } = useSelector((store) => store);
     const [activeTab, setActiveTab] = useState("home");
 
     const togglePanel = () => {
@@ -30,11 +32,11 @@ function Navbar() {
         dispatch(logoutAction())
             .then(() => {
                 navigate("/login");
-                toast.success(auth.logout || 'Logged out successfully');
+                toast.success(auth.logout || "Logged out successfully");
             })
             .catch(() => {
                 toast.error("Failed to logout. Please try again.");
-            })
+            });
     };
 
     const handleTabClick = (tab) => {
@@ -65,13 +67,13 @@ function Navbar() {
     return (
         <header className="bg-[#3E2723] h-24 flex items-center px-8 relative shadow-md shadow-[#00000088]">
             <div className="flex items-center">
-                <img src={logo} alt="Logo" className="w-16 h-16 mr-2 rounded-full"/>
+                <img src={logo} alt="Logo" className="w-16 h-16 mr-2 rounded-full" />
                 <p className="text-white font-bold text-3xl">MualaFuel</p>
             </div>
 
             <div className="flex lg:hidden ml-auto z-[2]">
                 <button onClick={togglePanel} className="text-white text-3xl">
-                    {isPanelVisible ? <MdCancel/> : <AiOutlineMenuFold/>}
+                    {isPanelVisible ? <MdCancel /> : <AiOutlineMenuFold />}
                 </button>
             </div>
 
@@ -98,7 +100,7 @@ function Navbar() {
                         </li>
                     ))}
                     <li className="relative group text-white" onClick={() => { setPanelVisible(false); navigate("/cart"); }}>
-                        <FaShoppingCart className="text-2xl transition-colors duration-300 group-hover:text-amber-300 cursor-pointer"/>
+                        <FaShoppingCart className="text-2xl transition-colors duration-300 group-hover:text-amber-300 cursor-pointer" />
                     </li>
                 </ul>
 
@@ -128,46 +130,60 @@ function Navbar() {
                         </div>
                     )}
                 </div>
-            </nav>
 
-            <div className="hidden lg:flex items-center gap-4 ml-20 relative">
-                {auth.reqUser ? (
-                    <>
-                        <div className="flex flex-col">
-                            <p
-                                className="text-white font-bold text-lg cursor-pointer"
-                                onClick={() => navigate(`/user-profile/${auth.reqUser.nickName}`)}
-                            >
-                                {auth.reqUser?.firstName} {auth.reqUser?.lastName}
-                            </p>
-                            <div className="flex gap-2">
-                                {auth.reqUser?.roles &&
-                                    Array.from(auth.reqUser.roles).map((role, id) => (
-                                        <span key={id} className="text-xs text-amber-300">{role.name}</span>
-                                    ))
-                                }
-                            </div>
-                        </div>
-                        <button onClick={toggleMenu} className="text-white text-xl focus:outline-none">
-                            <BiDotsVerticalRounded/>
-                        </button>
-                        {isMenuOpen && (
-                            <div className="absolute top-[7vh] right-0 mt-2 bg-[#3E2723] shadow-lg rounded w-40">
-                                <button
-                                    onClick={handleLogout}
-                                    className="w-full text-center px-4 py-2 text-white hover:bg-[#4E3423]"
+                <div className="hidden lg:flex items-center gap-4 ml-20 relative">
+                    {auth.reqUser ? (
+                        <>
+                            <div className="flex flex-col">
+                                <p
+                                    className="text-white font-bold text-lg cursor-pointer"
+                                    onClick={() => navigate(`/user-profile/${auth.reqUser.nickName}`)}
                                 >
-                                    Logout
-                                </button>
+                                    {auth.reqUser?.firstName} {auth.reqUser?.lastName}
+                                </p>
+                                <div className="flex gap-2">
+                                    {auth.reqUser?.roles &&
+                                        Array.from(auth.reqUser.roles).map((role, id) => (
+                                            <span key={id} className="text-xs text-amber-300">{role.name}</span>
+                                        ))
+                                    }
+                                </div>
                             </div>
-                        )}
-                    </>
-                ) : (
-                    <div className="flex items-center" onClick={() => navigate("/login")}>
-                        <p className="text-white font-bold text-lg cursor-pointer">Login</p>
-                    </div>
-                )}
-            </div>
+                            <button onClick={toggleMenu} className="text-white text-xl focus:outline-none">
+                                <BiDotsVerticalRounded />
+                            </button>
+                            {isMenuOpen && (
+                                <div className="absolute top-[7vh] right-0 mt-2 bg-[#3E2723] shadow-lg rounded w-40 flex flex-col">
+                                    {auth.reqUser && Array.from(auth.reqUser.roles).some(role => role.name === "ADMIN") && (
+                                        <button
+                                            onClick={() => {
+                                                setShowAddProductForm(true);
+                                                setMenuOpen(false);
+                                            }}
+                                            className="w-full text-center px-4 py-2 text-white hover:bg-[#4E3423]"
+                                        >
+                                            Add Product
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full text-center px-4 py-2 text-white hover:bg-[#4E3423]"
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <div className="flex items-center" onClick={() => navigate("/login")}>
+                            <p className="text-white font-bold text-lg cursor-pointer">Login</p>
+                        </div>
+                    )}
+                </div>
+            </nav>
+            {showAddProductForm && (
+                <AddProductForm onClose={() => setShowAddProductForm(false)} />
+            )}
         </header>
     );
 }

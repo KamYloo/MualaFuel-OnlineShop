@@ -28,8 +28,20 @@ public class ProductServiceImpl implements ProductService {
     private final FileStorageService fileStorageService;
 
     @Override
-    public ProductDto save(ProductDto product) {
-        return mapper.mapTo(productDao.save(mapper.mapFrom(product)));
+    public ProductDto save(ProductDto product, MultipartFile image) {
+        if (image != null && !image.isEmpty()) {
+            String savedRelativePath = fileStorageService.saveFile(image, "products/");
+            product.setImagePath(savedRelativePath);
+        }
+
+        Product entity = mapper.mapFrom(product);
+        Product savedEntity = productDao.save(entity);
+
+        if (savedEntity.getImagePath() != null) {
+            savedEntity.setImagePath(cdn + savedEntity.getImagePath());
+        }
+
+        return mapper.mapTo(savedEntity);
     }
 
     @Override

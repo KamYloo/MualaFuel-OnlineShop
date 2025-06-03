@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ProductService {
-    ProductDto save(ProductDto product);
+    ProductDto save(ProductDto product, MultipartFile image);
     ProductDto update(ProductDto product);
     void delete(long id);
     ProductDto findById(long id);
