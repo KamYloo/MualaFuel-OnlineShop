@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductsAction } from "../redux/ProductService/Action.js";
-import { InputSlider } from "../features/Assortyment/InputSlider.jsx";
-import { ProductCard } from "../features/Assortyment/ProductCard.jsx";
+import { InputSlider } from "../features/Assortment/InputSlider.jsx";
+import { ProductCard } from "../features/Assortment/ProductCard.jsx";
 
 function Assortment() {
   const dispatch = useDispatch();

@@ -30,9 +30,10 @@ public class ProductController {
         return new ResponseEntity<>(productService.save(productDto, image), HttpStatus.CREATED);
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<ProductDto> update(@RequestBody ProductDto product) {
-        return new ResponseEntity<>(productService.update(product), HttpStatus.OK);
+    @PutMapping("/update")
+    public ResponseEntity<ProductDto> update(@ModelAttribute ProductDto product,
+                                             @RequestPart(value = "image", required = false) MultipartFile image) {
+        return new ResponseEntity<>(productService.update(product, image), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -46,7 +47,7 @@ public class ProductController {
         return new ResponseEntity<>(productService.findById(id), HttpStatus.OK);
     }
 
-    @PostMapping("/update/image/{id}")
+    @PutMapping("/update/image/{id}")
     public ResponseEntity<ProductDto> updateImage(@PathVariable long id, @RequestParam("image") MultipartFile image) {
         return new ResponseEntity<>(productService.updateImage(id, image), HttpStatus.OK);
     }

@@ -45,9 +45,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto update(ProductDto product) {
-        return mapper.mapTo(productDao.update(mapper.mapFrom(product)));
+    public ProductDto update(ProductDto productDto, MultipartFile image) {
+        Product existing = productDao.findById(productDto.getId())
+                .orElseThrow(() -> new CustomException(BusinessErrorCodes.NOT_FOUND));
+
+        Product toUpdate = mapper.mapFrom(productDto);
+
+        if (image != null && !image.isEmpty()) {
+            String savedRelativePath = fileStorageService.saveFile(image, "products/");
+            toUpdate.setImagePath(savedRelativePath);
+        } else {
+            toUpdate.setImagePath(existing.getImagePath());
+        }
+
+        Product updated = productDao.update(toUpdate);
+
+        if (updated.getImagePath() != null) {
+            updated.setImagePath(cdn + updated.getImagePath());
+        }
+
+        return mapper.mapTo(updated);
     }
+
 
     @Override
     public void delete(long id) {

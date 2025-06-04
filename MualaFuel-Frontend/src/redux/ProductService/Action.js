@@ -60,8 +60,8 @@ export const updateProductAction = (productData) => async (dispatch) => {
         UPDATE_PRODUCT_ERROR,
         "/product/update",
         {
-            method: "POST",
-            body: JSON.stringify(productData),
+            method: "PUT",
+            body: productData,
         }
     );
 };

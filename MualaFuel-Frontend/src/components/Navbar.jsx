@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import logo from "../assets/logo.png";
 import { logoutAction } from "../redux/AuthService/Action.js";
-import { AddProductForm } from "./AddProductForm.jsx";
+import { AddProductForm } from "../features/Assortment/AddProductForm.jsx";
 
 function Navbar() {
     const [isPanelVisible, setPanelVisible] = useState(false);
