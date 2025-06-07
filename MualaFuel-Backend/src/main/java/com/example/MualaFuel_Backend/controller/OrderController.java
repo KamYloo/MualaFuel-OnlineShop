@@ -38,16 +38,5 @@ public class OrderController {
         return ResponseEntity.ok(list);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateOrderStatus(@PathVariable Long id) throws SQLException {
 
-        orderService.updateStatusOfOrder(id);
-        return ResponseEntity.ok("Order status updated");
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> cancelOrder(@PathVariable Long id) throws SQLException {
-        orderService.cancelOrder(id);
-        return ResponseEntity.ok("Order cancelled");
-    }
 }

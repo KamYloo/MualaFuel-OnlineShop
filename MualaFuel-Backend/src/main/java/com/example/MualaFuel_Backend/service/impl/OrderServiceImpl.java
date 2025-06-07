@@ -1,7 +1,7 @@
 package com.example.MualaFuel_Backend.service.impl;
 
-import com.example.MualaFuel_Backend.dao.OrderDao;
-import com.example.MualaFuel_Backend.dao.OrderItemDao;
+import com.example.MualaFuel_Backend.dao.OrderDaoImpl;
+import com.example.MualaFuel_Backend.dao.OrderItemDaoImpl;
 import com.example.MualaFuel_Backend.dao.ProductDao;
 import com.example.MualaFuel_Backend.dao.UserDao;
 import com.example.MualaFuel_Backend.dto.OrderDto;
@@ -33,17 +33,22 @@ import static com.example.MualaFuel_Backend.enums.OrderStatus.*;
 public class OrderServiceImpl implements OrderService {
 
     private final Cart cart;
-    private final OrderDao orderRepository;
+    private final OrderDaoImpl orderRepository;
     private final ProductDao productRepository;
-    private final OrderItemDao orderItemRepository;
+    private final OrderItemDaoImpl orderItemRepository;
     private final UserDao userRepository;
     private final Mapper<Order, OrderDto> mapper;
     private final EmailService emailService;
 
     @Override
+    public List<OrderDto> getAllOrders() {
+        return orderRepository.findAll().stream().map(mapper::mapTo).collect(Collectors.toList());
+    }
+
+    @Override
     public OrderDto placeOrder(ShippingDetails shippingDetails,
                                PaymentDetails paymentDetails,
-                               Principal principal) throws SQLException, MessagingException {
+                               Principal principal) throws MessagingException, SQLException {
 
         List<CartItem> cartItems = cart.getItems();
         if (cartItems.isEmpty()) {
@@ -102,7 +107,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> getAllOrdersOfUser(Principal principal) throws SQLException {
+    public List<OrderDto> getAllOrdersOfUser(Principal principal){
         User user = userRepository.findByEmail(principal.getName()).orElseThrow(
                 () -> new CustomException(BusinessErrorCodes.NOT_FOUND)
         );
@@ -111,20 +116,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateStatusOfOrder(Long orderId) throws SQLException {
+    public void updateStatusOfOrder(Long orderId){
         Order order = getOrder(orderId);
         order.setStatus(nextStatus(order.getStatus()));
         orderRepository.save(order);
     }
 
     @Override
-    public void cancelOrder(Long orderId) throws SQLException {
+    public void cancelOrder(Long orderId){
         Order order = getOrder(orderId);
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
     }
 
-    private Order getOrder(Long orderId) throws SQLException {
+    private Order getOrder(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new CustomException(BusinessErrorCodes.NOT_FOUND)
         );

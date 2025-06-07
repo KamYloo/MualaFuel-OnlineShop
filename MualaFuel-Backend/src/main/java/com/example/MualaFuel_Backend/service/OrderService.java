@@ -10,10 +10,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface OrderService {
+    List<OrderDto> getAllOrders();
     OrderDto placeOrder(ShippingDetails shippingDetails,
                         PaymentDetails paymentDetails,
-                        Principal principal) throws SQLException, MessagingException;
-    List<OrderDto> getAllOrdersOfUser(Principal principal) throws SQLException;
-    void updateStatusOfOrder(Long orderId) throws SQLException;
-    void cancelOrder(Long orderId) throws SQLException;
+                        Principal principal) throws MessagingException, SQLException;
+    List<OrderDto> getAllOrdersOfUser(Principal principal);
+    void updateStatusOfOrder(Long orderId);
+    void cancelOrder(Long orderId);
 }
