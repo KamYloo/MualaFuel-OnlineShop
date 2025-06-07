@@ -25,7 +25,8 @@ class OrderItemDaoTest {
     @Mock ResultSet resultSet;
     @Mock ProductDao productDao;
 
-    @InjectMocks OrderItemDao orderItemDao;
+    @InjectMocks
+    OrderItemDaoImpl orderItemDao;
 
     private MockedStatic<ConnectionFactory> connectionFactoryMock;
 
@@ -154,7 +155,7 @@ class OrderItemDaoTest {
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(1);
 
-        assertDoesNotThrow(() -> orderItemDao.deleteById(3L));
+        assertDoesNotThrow(() -> orderItemDao.delete(3L));
         verify(preparedStatement).setLong(1, 3L);
         verify(preparedStatement).executeUpdate();
     }

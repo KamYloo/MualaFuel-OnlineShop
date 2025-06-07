@@ -2,14 +2,15 @@ package com.example.MualaFuel_Backend.controller;
 
 import com.example.MualaFuel_Backend.dto.OrderDto;
 import com.example.MualaFuel_Backend.dto.OrderItemDto;
-import com.example.MualaFuel_Backend.dto.OrderRequest;
 import com.example.MualaFuel_Backend.entity.PaymentDetails;
 import com.example.MualaFuel_Backend.entity.ShippingDetails;
 import com.example.MualaFuel_Backend.enums.OrderStatus;
 import com.example.MualaFuel_Backend.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
@@ -20,13 +21,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class OrderControllerTest {
+public class OrderAdminControllerTest {
 
     @Mock
     OrderService orderService;
 
     @InjectMocks
-    OrderController orderController;
+    OrderAdminController orderController;
 
     OrderDto sampleOrderDto;
     ShippingDetails shippingDetails;
@@ -60,26 +61,38 @@ class OrderControllerTest {
     }
 
     @Test
-    void testPlaceOrder() throws Exception {
-        OrderRequest request = new OrderRequest(shippingDetails, paymentDetails);
-        when(orderService.placeOrder(shippingDetails, paymentDetails, principal)).thenReturn(sampleOrderDto);
+    void testGetAllOrders() {
+        when(orderService.getAllOrders()).thenReturn(List.of(sampleOrderDto));
 
-        ResponseEntity<OrderDto> response = orderController.placeOrder(request, principal);
+        ResponseEntity<List<?>> list = orderController.getAllOrders();
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(sampleOrderDto, response.getBody());
-        verify(orderService).placeOrder(shippingDetails, paymentDetails, principal);
+        assertEquals(200, list.getStatusCodeValue());
+        assertFalse(list.getBody().isEmpty());
+        assertEquals(sampleOrderDto, list.getBody().get(0));
+
+        verify(orderService, times(1)).getAllOrders();
     }
 
     @Test
-    void testGetOrdersOfUser() throws Exception {
-        List<OrderDto> orders = List.of(sampleOrderDto);
-        when(orderService.getAllOrdersOfUser(principal)).thenReturn(orders);
+    void testUpdateOrderStatus() throws Exception {
+        doNothing().when(orderService).updateStatusOfOrder(1L);
 
-        ResponseEntity<List<OrderDto>> response = orderController.getOrdersOfUser(principal);
+        ResponseEntity<String> response = orderController.updateOrderStatus(1L);
 
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(orders, response.getBody());
-        verify(orderService).getAllOrdersOfUser(principal);
+        assertEquals("Order status updated", response.getBody());
+        verify(orderService).updateStatusOfOrder(1L);
     }
+
+    @Test
+    void testCancelOrder() throws Exception {
+        doNothing().when(orderService).cancelOrder(1L);
+
+        ResponseEntity<String> response = orderController.cancelOrder(1L);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("Order cancelled", response.getBody());
+        verify(orderService).cancelOrder(1L);
+    }
+
 }

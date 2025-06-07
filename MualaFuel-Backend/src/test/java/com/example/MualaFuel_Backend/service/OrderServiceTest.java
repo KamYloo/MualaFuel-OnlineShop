@@ -1,7 +1,7 @@
 package com.example.MualaFuel_Backend.service;
 
-import com.example.MualaFuel_Backend.dao.OrderDao;
-import com.example.MualaFuel_Backend.dao.OrderItemDao;
+import com.example.MualaFuel_Backend.dao.OrderDaoImpl;
+import com.example.MualaFuel_Backend.dao.OrderItemDaoImpl;
 import com.example.MualaFuel_Backend.dao.ProductDao;
 import com.example.MualaFuel_Backend.dao.UserDao;
 import com.example.MualaFuel_Backend.dto.OrderDto;
@@ -11,7 +11,6 @@ import com.example.MualaFuel_Backend.handler.BusinessErrorCodes;
 import com.example.MualaFuel_Backend.handler.CustomException;
 import com.example.MualaFuel_Backend.mapper.Mapper;
 import com.example.MualaFuel_Backend.service.impl.OrderServiceImpl;
-import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -28,9 +27,11 @@ import static org.mockito.Mockito.*;
 class OrderServiceTest {
 
     @Mock Cart cart;
-    @Mock OrderDao orderDao;
+    @Mock
+    OrderDaoImpl orderDao;
     @Mock ProductDao productDao;
-    @Mock OrderItemDao orderItemDao;
+    @Mock
+    OrderItemDaoImpl orderItemDao;
     @Mock UserDao userDao;
     @Mock Mapper<Order, OrderDto> mapper;
     @Mock EmailService emailService;

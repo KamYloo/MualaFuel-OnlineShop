@@ -25,10 +25,12 @@ class OrderDaoTest {
     @Mock Connection connection;
     @Mock PreparedStatement preparedStatement;
     @Mock ResultSet resultSet;
-    @Mock OrderItemDao orderItemDao;
+    @Mock
+    OrderItemDaoImpl orderItemDao;
     @Mock UserDao userDao;
 
-    @InjectMocks OrderDao orderDao;
+    @InjectMocks
+    OrderDaoImpl orderDao;
 
     private MockedStatic<ConnectionFactory> connectionFactoryMock;
 
@@ -232,7 +234,7 @@ class OrderDaoTest {
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(1);
 
-        assertDoesNotThrow(() -> orderDao.delete(5));
+        assertDoesNotThrow(() -> orderDao.delete(5L));
         verify(preparedStatement).setInt(1, 5);
         verify(preparedStatement).executeUpdate();
     }
