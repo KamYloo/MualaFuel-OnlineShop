@@ -11,8 +11,22 @@ import {
     UPDATE_QUANTITY_ERROR,
     PLACE_ORDER_FROM_CART_REQUEST,
     PLACE_ORDER_FROM_CART_SUCCESS,
-    PLACE_ORDER_FROM_CART_ERROR,
+    PLACE_ORDER_FROM_CART_ERROR, ADD_ITEM_ERROR, ADD_ITEM_SUCCESS, ADD_ITEM_REQUEST,
 } from "./ActionType.js";
+
+export const addItemAction = (productId, quantity) => async (dispatch) => {
+    await dispatchAction(
+        dispatch,
+        ADD_ITEM_REQUEST,
+        ADD_ITEM_SUCCESS,
+        ADD_ITEM_ERROR,
+        '/cart/items',
+        {
+            method: 'POST',
+            body: JSON.stringify({ productId, quantity }),
+        }
+    );
+};
 
 export const fetchCartAction = () => async (dispatch) => {
     await dispatchAction(
