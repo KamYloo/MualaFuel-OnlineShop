@@ -12,7 +12,6 @@ import {
     CANCEL_ADMIN_ORDER_REQUEST,
     CANCEL_ADMIN_ORDER_SUCCESS, CANCEL_ADMIN_ORDER_ERROR,
 } from "./ActionType.js";
-import {SAVE_ERROR, SAVE_REQUEST, SAVE_SUCCESS} from "../ProductService/ActionType.js";
 
 export const fetchOwnOrdersAction = () => async (dispatch) => {
     await dispatchAction(
