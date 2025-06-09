@@ -1,14 +1,30 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOwnOrdersAction } from "../redux/OrderService/Action.js";
+import {cancelAdminOrderAction, fetchAdminOrdersAction, updateAdminOrderAction} from "../redux/OrderService/Action.js";
+import toast from "react-hot-toast";
 
-function Orders() {
+function OrdersManagement() {
     const dispatch = useDispatch();
-    const { orders, loading, error } = useSelector((state) => state.orderService);
+    const { orders, loading, error, updateLoading, cancelLoading } = useSelector((state) => state.orderService);
 
     useEffect(() => {
-        dispatch(fetchOwnOrdersAction());
-    }, [dispatch]);
+        dispatch(fetchAdminOrdersAction());
+    }, [dispatch, cancelLoading, updateLoading]);
+
+    const handleUpdate = (orderId) => {
+        dispatch(updateAdminOrderAction(orderId))
+            .then(() => toast.success("Order status updated"))
+            .catch(() => toast.error(error))
+
+    };
+
+    const handleCancel = (orderId) => {
+        if (window.confirm("Are you sure you want to cancel this order?")) {
+            dispatch(cancelAdminOrderAction(orderId))
+                .then(() => toast.success("Order cancelled"))
+                .catch(() =>  toast.error(error))
+        }
+    };
 
     if (loading) {
         return <div className="text-center p-8 text-gray-500">Loading orders...</div>;
@@ -21,7 +37,7 @@ function Orders() {
     return (
         <div className="min-h-screen p-8" style={{ backgroundColor: "#f5e9dc" }}>
             <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
-                <h1 className="text-3xl font-bold text-[#3E2723] mb-6">Order History</h1>
+                <h1 className="text-3xl font-bold text-[#3E2723] mb-6">Admin Orders Panel</h1>
                 {orders.length === 0 ? (
                     <p className="text-center text-gray-500">No orders found</p>
                 ) : (
@@ -62,24 +78,19 @@ function Orders() {
                                     </div>
                                 </div>
 
-                                <div className="border-t pt-4">
-                                    <h3 className="font-semibold mb-3 text-[#3E2723]">Order Items</h3>
-                                    {order.orderItems.map((item) => (
-                                        <div key={item.productId} className="flex justify-between items-center py-2">
-                                            <div>
-                                                <p className="font-medium text-[#3E2723]">{item.productName}</p>
-                                                <p className="text-sm text-gray-500">
-                                                    Quantity: {item.quantity}
-                                                </p>
-                                            </div>
-                                            <div className="text-right">
-                                                <p>{item.unitPrice.toFixed(2)} zł each</p>
-                                                <p className="font-medium text-[#3E2723]">
-                                                    {(item.unitPrice * item.quantity).toFixed(2)} zł
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
+                                <div className="border-t pt-4 flex justify-end gap-4">
+                                    <button
+                                        onClick={() => handleUpdate(order.id)}
+                                        className="bg-[#3E2723] hover:bg-[#4E3423] text-white px-4 py-2 rounded transition-colors"
+                                    >
+                                        Update Status
+                                    </button>
+                                    <button
+                                        onClick={() => handleCancel(order.id)}
+                                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition-colors"
+                                    >
+                                        Cancel Order
+                                    </button>
                                 </div>
                             </div>
                         ))}
@@ -90,4 +101,4 @@ function Orders() {
     );
 }
 
-export { Orders };
+export { OrdersManagement };
