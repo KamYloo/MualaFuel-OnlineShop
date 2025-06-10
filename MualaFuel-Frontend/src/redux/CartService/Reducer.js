@@ -11,6 +11,9 @@ import {
     PLACE_ORDER_FROM_CART_REQUEST,
     PLACE_ORDER_FROM_CART_SUCCESS,
     PLACE_ORDER_FROM_CART_ERROR,
+    ADD_ITEM_REQUEST,
+    ADD_ITEM_SUCCESS,
+    ADD_ITEM_ERROR,
 } from "./ActionType.js";
 
 const initialState = {
@@ -24,6 +27,7 @@ const initialState = {
     updateLoading: false,
     orderPlacing: false,
     orderPlaceSuccess: null,
+    addLoading: false,
 };
 
 export const cartReducer = (state = initialState, action) => {
@@ -55,6 +59,13 @@ export const cartReducer = (state = initialState, action) => {
             return { ...state, orderPlacing: false, orderPlaceSuccess: action.payload };
         case PLACE_ORDER_FROM_CART_ERROR:
             return { ...state, orderPlacing: false, error: action.payload };
+
+        case ADD_ITEM_REQUEST:
+            return { ...state, addLoading: true, error: null };
+        case ADD_ITEM_SUCCESS:
+            return { ...state, addLoading: false };
+        case ADD_ITEM_ERROR:
+            return { ...state, addLoading: false, error: action.payload };
 
         default:
             return state;

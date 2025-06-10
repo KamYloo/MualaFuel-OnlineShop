@@ -53,14 +53,14 @@ function Navbar() {
     const tabs = [
         { name: "Home", path: "home" },
         { name: "Assortment", path: "assortment" },
-        { name: "Orders", path: "orders" },
+        { name: "YourOrders", path: "orders" },
     ];
 
-    // Add Emails tab for ADMIN and SUPPORT roles
     if (auth.reqUser) {
         const roles = Array.from(auth.reqUser.roles || []);
         if (roles.some(role => role.name === "ADMIN" || role.name === "SUPPORT")) {
             tabs.push({ name: "Emails", path: "emailsHistory" });
+            tabs.push({ name: "Orders", path: "ordersManagement" });
         }
     }
 

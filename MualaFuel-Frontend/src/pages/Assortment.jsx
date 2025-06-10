@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductsAction } from "../redux/ProductService/Action.js";
 import { InputSlider } from "../features/Assortment/InputSlider.jsx";
 import { ProductCard } from "../features/Assortment/ProductCard.jsx";
+import Spinner from "../components/Spinner.jsx";
+import ErrorOverlay from "../components/ErrorOverlay.jsx";
 
 function Assortment() {
   const dispatch = useDispatch();
@@ -57,7 +59,6 @@ function Assortment() {
   return (
     <div className="min-h-screen p-8" style={{ backgroundColor: "#f5e9dc" }}>
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-4">
-        {/* Panel filtrów */}
         <div className="w-full lg:w-1/4 bg-white rounded-xl shadow-md p-6 max-h-[900px] overflow-y-auto">
           <div className="space-y-6">
             <div className="flex flex-col">
@@ -119,13 +120,13 @@ function Assortment() {
         </div>
         <div className="w-full lg:w-3/4">
           {loading ? (
-            <div className="text-center p-8 text-gray-500">Loading products...</div>
+              <Spinner size={350} />
           ) : error ? (
-            <div className="text-center p-8 text-red-500">Error: {error}</div>
+              <ErrorOverlay size={350} message={error}/>
           ) : (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {products.map((product, index) => (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {products.map((product, index) => (
                   <ProductCard key={index} product={product} />
                 ))}
               </div>

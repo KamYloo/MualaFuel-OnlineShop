@@ -6,6 +6,8 @@ import {
     updateQuantityAction, 
     placeOrderFromCartAction 
 } from "../redux/CartService/Action.js";
+import Spinner from "../components/Spinner.jsx";
+import ErrorOverlay from "../components/ErrorOverlay.jsx";
 
 function Cart() {
     const dispatch = useDispatch();
@@ -42,13 +44,8 @@ function Cart() {
         setShowCheckoutForm(false);
     };
 
-    if (loading) {
-        return <div className="text-center p-8 text-gray-500">Loading cart...</div>;
-    }
-
-    if (error) {
-        return <div className="text-center p-8 text-red-500">{error}</div>;
-    }
+    if (loading) return <Spinner size={350} />
+    if (error) return <ErrorOverlay size={350} message={error}/>
 
     return (
         <div className="min-h-screen p-8" style={{ backgroundColor: "#f5e9dc" }}>

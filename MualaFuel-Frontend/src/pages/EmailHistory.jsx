@@ -7,6 +7,8 @@ import {
     fetchEmailBody
 } from '../redux/EmailService/Action.js';
 import { EmailPreview } from "../features/EmailHistory/EmailPreview.jsx";
+import Spinner from "../components/Spinner.jsx";
+import ErrorOverlay from "../components/ErrorOverlay.jsx";
 
 export function EmailHistory() {
     const dispatch = useDispatch();
@@ -61,8 +63,8 @@ export function EmailHistory() {
         setShowPreview(true);
     };
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div className="text-red-500">Error: {error}</div>;
+    if (loading) return <Spinner size={350} />
+    if (error) return <ErrorOverlay size={350} message={error}/>
 
     return (
         <div className="min-h-screen p-8" style={{ backgroundColor: '#f5e9dc' }}>

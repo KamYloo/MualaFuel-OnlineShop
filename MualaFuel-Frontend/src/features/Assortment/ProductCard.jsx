@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteProductAction } from "../../redux/ProductService/Action.js";
+import {deleteProductAction, saveProductAction} from "../../redux/ProductService/Action.js";
+import { addItemAction } from "../../redux/CartService/Action.js";
 import default_product_image from "../../assets/default_product_image.png";
 import { EditProductForm } from "./EditProductForm.jsx";
+import toast from "react-hot-toast";
 
 export function ProductCard({ product }) {
   const [error, setError] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
 
   const dispatch = useDispatch();
   const { reqUser } = useSelector((state) => state.auth);
@@ -14,6 +18,19 @@ export function ProductCard({ product }) {
 
   const handleDelete = () => {
     dispatch(deleteProductAction(product.id));
+  };
+
+  const handleAddToCart = () => {
+    setIsAdding(true);
+    dispatch(addItemAction(product.id, quantity))
+      .then(() => {
+        setIsAdding(false);
+        toast.success("Product added to cart successfully");
+      })
+      .catch(() => {
+        toast.error("Failed to add product");
+        setIsAdding(false);
+      });
   };
 
   return (
@@ -47,10 +64,29 @@ export function ProductCard({ product }) {
           <div className="flex justify-between items-center mt-auto">
             <span className="font-bold text-lg text-[#3E2723]">{product.price} zł</span>
             <div className="flex flex-col items-end">
+              <div className="flex items-center gap-2 mb-2">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="px-2 py-1 bg-gray-300 hover:bg-gray-400 rounded"
+                >
+                  -
+                </button>
+                <span className="font-medium">{quantity}</span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="px-2 py-1 bg-gray-300 hover:bg-gray-400 rounded"
+                >
+                  +
+                </button>
+              </div>
               <button
-                className="bg-[#3E2723] hover:bg-[#4E3423] text-white px-3 py-1 rounded text-sm transition-colors"
+                onClick={handleAddToCart}
+                disabled={isAdding}
+                className={`bg-[#3E2723] ${
+                  isAdding ? "cursor-not-allowed opacity-50" : "hover:bg-[#4E3423]"
+                } text-white px-3 py-1 rounded text-sm transition-colors`}
               >
-                Add to Cart
+                {isAdding ? "Adding..." : "Add to Cart"}
               </button>
               {error && <span className="text-red-500 text-xs mt-1">{error}</span>}
               {isAdmin && (
@@ -74,10 +110,7 @@ export function ProductCard({ product }) {
         </div>
       </div>
       {showEditModal && (
-        <EditProductForm
-          product={product}
-          onClose={() => setShowEditModal(false)}
-        />
+        <EditProductForm product={product} onClose={() => setShowEditModal(false)} />
       )}
     </>
   );
