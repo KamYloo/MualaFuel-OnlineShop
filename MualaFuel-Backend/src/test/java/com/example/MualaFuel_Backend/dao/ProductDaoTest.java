@@ -25,7 +25,8 @@ class ProductDaoTest {
     @Mock PreparedStatement preparedStatement;
     @Mock ResultSet resultSet;
 
-    @InjectMocks ProductDao productDao;
+    @InjectMocks
+    ProductDaoImpl productDao;
 
     Product sampleProduct;
 

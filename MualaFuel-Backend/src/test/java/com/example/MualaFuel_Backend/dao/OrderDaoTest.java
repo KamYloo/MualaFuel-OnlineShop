@@ -27,7 +27,8 @@ class OrderDaoTest {
     @Mock ResultSet resultSet;
     @Mock
     OrderItemDaoImpl orderItemDao;
-    @Mock UserDao userDao;
+    @Mock
+    UserDao userDao;
 
     @InjectMocks
     OrderDaoImpl orderDao;
@@ -235,7 +236,7 @@ class OrderDaoTest {
         when(preparedStatement.executeUpdate()).thenReturn(1);
 
         assertDoesNotThrow(() -> orderDao.delete(5L));
-        verify(preparedStatement).setInt(1, 5);
+        verify(preparedStatement).setLong(1, 5L);
         verify(preparedStatement).executeUpdate();
     }
 }

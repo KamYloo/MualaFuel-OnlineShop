@@ -26,7 +26,8 @@ class EmailHistoryDaoTest {
     @Mock PreparedStatement preparedStatement;
     @Mock ResultSet resultSet;
 
-    @InjectMocks EmailHistoryDao emailHistoryDao;
+    @InjectMocks
+    EmailHistoryDaoImpl emailHistoryDao;
 
     private MockedStatic<ConnectionFactory> connectionFactoryMock;
 

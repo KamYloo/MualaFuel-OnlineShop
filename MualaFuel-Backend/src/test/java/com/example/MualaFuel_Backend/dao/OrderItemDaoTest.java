@@ -23,7 +23,8 @@ class OrderItemDaoTest {
     @Mock Connection connection;
     @Mock PreparedStatement preparedStatement;
     @Mock ResultSet resultSet;
-    @Mock ProductDao productDao;
+    @Mock
+    ProductDaoImpl productDao;
 
     @InjectMocks
     OrderItemDaoImpl orderItemDao;

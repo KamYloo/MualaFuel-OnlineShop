@@ -1,6 +1,6 @@
 package com.example.MualaFuel_Backend.service;
 
-import com.example.MualaFuel_Backend.dao.EmailHistoryDao;
+import com.example.MualaFuel_Backend.dao.EmailHistoryDaoImpl;
 import com.example.MualaFuel_Backend.dto.EmailHistoryDto;
 import com.example.MualaFuel_Backend.dto.request.EmailFilterRequest;
 import com.example.MualaFuel_Backend.entity.EmailHistory;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 class EmailHistoryServiceTest {
 
     @Mock
-    EmailHistoryDao emailHistoryDao;
+    EmailHistoryDaoImpl emailHistoryDao;
     @Mock
     Mapper<EmailHistory, EmailHistoryDto> emailHistoryMapper;
 

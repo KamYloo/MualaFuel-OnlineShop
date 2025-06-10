@@ -22,7 +22,8 @@ class RoleDaoTest {
     @Mock PreparedStatement preparedStatement;
     @Mock ResultSet resultSet;
 
-    @InjectMocks RoleDao roleDao;
+    @InjectMocks
+    RoleDao roleDao;
 
     private MockedStatic<ConnectionFactory> connectionFactoryMock;
 

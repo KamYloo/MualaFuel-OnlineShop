@@ -2,7 +2,7 @@ package com.example.MualaFuel_Backend.service;
 
 import com.example.MualaFuel_Backend.dao.OrderDaoImpl;
 import com.example.MualaFuel_Backend.dao.OrderItemDaoImpl;
-import com.example.MualaFuel_Backend.dao.ProductDao;
+import com.example.MualaFuel_Backend.dao.ProductDaoImpl;
 import com.example.MualaFuel_Backend.dao.UserDao;
 import com.example.MualaFuel_Backend.dto.OrderDto;
 import com.example.MualaFuel_Backend.entity.*;
@@ -29,10 +29,12 @@ class OrderServiceTest {
     @Mock Cart cart;
     @Mock
     OrderDaoImpl orderDao;
-    @Mock ProductDao productDao;
+    @Mock
+    ProductDaoImpl productDao;
     @Mock
     OrderItemDaoImpl orderItemDao;
-    @Mock UserDao userDao;
+    @Mock
+    UserDao userDao;
     @Mock Mapper<Order, OrderDto> mapper;
     @Mock EmailService emailService;
 

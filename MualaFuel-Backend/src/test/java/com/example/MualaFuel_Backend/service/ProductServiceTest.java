@@ -1,6 +1,6 @@
 package com.example.MualaFuel_Backend.service;
 
-import com.example.MualaFuel_Backend.dao.ProductDao;
+import com.example.MualaFuel_Backend.dao.ProductDaoImpl;
 import com.example.MualaFuel_Backend.dto.ProductDto;
 import com.example.MualaFuel_Backend.dto.ProductSearchDto;
 import com.example.MualaFuel_Backend.entity.Product;
@@ -24,7 +24,8 @@ import static org.mockito.Mockito.*;
 
 class ProductServiceTest {
 
-    @Mock ProductDao productDao;
+    @Mock
+    ProductDaoImpl productDao;
     @Mock Mapper<Product, ProductDto> mapper;
     @Mock FileStorageService fileStorageService;
     @Mock MultipartFile multipartFile;

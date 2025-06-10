@@ -24,7 +24,8 @@ class UserDaoTest {
     @Mock ResultSet userRs;
     @Mock ResultSet roleRs;
 
-    @InjectMocks UserDao userDao;
+    @InjectMocks
+    UserDao userDao;
 
     private MockedStatic<ConnectionFactory> connectionFactoryMock;
 
