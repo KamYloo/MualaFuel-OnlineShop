@@ -5,6 +5,7 @@ import { addItemAction } from "../../redux/CartService/Action.js";
 import default_product_image from "../../assets/default_product_image.png";
 import { EditProductForm } from "./EditProductForm.jsx";
 import toast from "react-hot-toast";
+import {useNavigate} from "react-router-dom";
 
 export function ProductCard({ product }) {
   const [error, setError] = useState(null);
@@ -15,6 +16,7 @@ export function ProductCard({ product }) {
   const dispatch = useDispatch();
   const { reqUser } = useSelector((state) => state.auth);
   const isAdmin = reqUser && Array.from(reqUser.roles).some((role) => role.name === "ADMIN");
+  const navigate = useNavigate();
 
   const handleDelete = () => {
     dispatch(deleteProductAction(product.id));
@@ -41,12 +43,14 @@ export function ProductCard({ product }) {
             <img
               src={product.imagePath}
               alt={product.name}
+              onClick={ () => navigate(`/product/${product.id}`)}
               className="h-full w-full object-cover cursor-pointer"
             />
           ) : (
             <img
               src={default_product_image}
               alt="Default product"
+              onClick={ () => navigate(`/product/${product.id}`)}
               className="h-32 w-32 object-contain cursor-pointer"
             />
           )}

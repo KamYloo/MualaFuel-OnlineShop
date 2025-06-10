@@ -11,6 +11,7 @@ import {Layout} from "./layout/Layout.jsx";
 import {ProtectedRoute} from "./ProtectedRoute.jsx";
 import {EmailHistory} from "./pages/EmailHistory.jsx";
 import {OrdersManagement} from "./pages/OrdersManagement.jsx";
+import {Product} from "./pages/Product.jsx";
 
 function AppRoutes() {
     return (
@@ -26,6 +27,7 @@ function AppRoutes() {
                 <Route element={<Layout/>}>
                     <Route path="/home" element={<Home />} />
                     <Route path="/assortment" element={<Assortment />} />
+                    <Route path="/product/:id" element={<Product />} />
                     <Route path="/orders" element={<Orders />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route
