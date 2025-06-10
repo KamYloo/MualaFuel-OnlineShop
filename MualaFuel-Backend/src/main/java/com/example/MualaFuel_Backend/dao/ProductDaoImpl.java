@@ -15,8 +15,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class ProductDao {
+public class ProductDaoImpl implements ProductDao {
 
+    @Override
     public Product save(Product product) {
         final String SQL_INSERT = "INSERT INTO product (name, description, price, brand, alcohol_type, quantity, " +
                 "alcohol_content, capacity_in_milliliters, image_path) " +
@@ -59,6 +60,7 @@ public class ProductDao {
         }
     }
 
+    @Override
     public Optional<Product> findById(Long id) {
         final String SQL_SELECT = "SELECT * FROM product WHERE id = ?";
 
@@ -77,6 +79,7 @@ public class ProductDao {
         }
     }
 
+    @Override
     public Page<Product> findAll(Pageable pageable, ProductSearchDto productSearch) {
         String SQL_SELECT = "SELECT * FROM product";
         String countQuery = "SELECT COUNT(*) FROM product";
@@ -122,6 +125,7 @@ public class ProductDao {
         return new PageImpl<>(products, pageable, totalElements);
     }
 
+    @Override
     public Product update(Product product) {
         final String SQL_UPDATE = "UPDATE product SET name = ?, description = ?, price = ?, brand = ?, " +
                 "alcohol_type = ?, quantity = ?, alcohol_content = ?, " +
@@ -152,6 +156,7 @@ public class ProductDao {
         return product;
     }
 
+    @Override
     public void delete(Long id) {
         final String SQL_DELETE = "DELETE FROM product WHERE id = ?";
 

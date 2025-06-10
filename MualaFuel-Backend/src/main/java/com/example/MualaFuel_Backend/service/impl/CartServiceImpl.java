@@ -1,6 +1,6 @@
 package com.example.MualaFuel_Backend.service.impl;
 
-import com.example.MualaFuel_Backend.dao.ProductDao;
+import com.example.MualaFuel_Backend.dao.ProductDaoImpl;
 import com.example.MualaFuel_Backend.dto.CartDto;
 import com.example.MualaFuel_Backend.entity.Cart;
 import com.example.MualaFuel_Backend.entity.Product;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class CartServiceImpl implements CartService {
     private final Cart cart;
     private final Mapper<Cart, CartDto> cartMapper;
-    private final ProductDao productRepository;
+    private final ProductDaoImpl productRepository;
 
     public void addToCart(Long productId, int quantity) {
         Product product = productRepository.findById(productId)

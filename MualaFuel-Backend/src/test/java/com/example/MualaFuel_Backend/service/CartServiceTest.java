@@ -1,6 +1,6 @@
 package com.example.MualaFuel_Backend.service;
 
-import com.example.MualaFuel_Backend.dao.ProductDao;
+import com.example.MualaFuel_Backend.dao.ProductDaoImpl;
 import com.example.MualaFuel_Backend.dto.CartDto;
 import com.example.MualaFuel_Backend.entity.Cart;
 import com.example.MualaFuel_Backend.entity.Product;
@@ -23,7 +23,8 @@ class CartServiceTest {
 
     @Mock Cart cart;
     @Mock Mapper<Cart, CartDto> cartMapper;
-    @Mock ProductDao productDao;
+    @Mock
+    ProductDaoImpl productDao;
 
     @InjectMocks CartServiceImpl cartService;
 

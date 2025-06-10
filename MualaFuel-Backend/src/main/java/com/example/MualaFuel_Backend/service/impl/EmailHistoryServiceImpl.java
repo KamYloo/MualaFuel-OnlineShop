@@ -1,6 +1,6 @@
 package com.example.MualaFuel_Backend.service.impl;
 
-import com.example.MualaFuel_Backend.dao.EmailHistoryDao;
+import com.example.MualaFuel_Backend.dao.EmailHistoryDaoImpl;
 import com.example.MualaFuel_Backend.dto.EmailHistoryDto;
 import com.example.MualaFuel_Backend.dto.request.EmailFilterRequest;
 import com.example.MualaFuel_Backend.entity.EmailHistory;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class EmailHistoryServiceImpl implements EmailHistoryService {
-    private final EmailHistoryDao emailHistoryRepository;
+    private final EmailHistoryDaoImpl emailHistoryRepository;
     private final Mapper<EmailHistory, EmailHistoryDto> emailHistoryMapper;
 
 

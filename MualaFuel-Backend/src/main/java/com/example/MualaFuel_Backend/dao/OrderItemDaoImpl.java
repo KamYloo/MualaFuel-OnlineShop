@@ -101,7 +101,25 @@ public class OrderItemDaoImpl implements OrderItemDao {
 
     @Override
     public List<OrderItem> findAll() {
-        return List.of();
+        String sql = "SELECT * FROM order_item";
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                OrderItem orderItem = map(rs);
+                Optional<Product> product = productDao.findById(orderItem.getProduct().getId());
+                product.ifPresent(orderItem::setProduct);
+                orderItems.add(orderItem);
+            }
+
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error fetching all order items", ex);
+        }
+
+        return orderItems;
     }
 
     @Override

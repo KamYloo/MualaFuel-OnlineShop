@@ -15,7 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrderDaoImpl implements OrderDao {
 
-    private final OrderItemDaoImpl orderItemRepository;
+    private final OrderItemDao orderItemRepository;
     private final UserDao userDao;
 
     @Override

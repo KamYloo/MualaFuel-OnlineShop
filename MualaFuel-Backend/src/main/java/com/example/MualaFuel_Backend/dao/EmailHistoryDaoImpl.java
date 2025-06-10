@@ -15,12 +15,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class EmailHistoryDao {
+public class EmailHistoryDaoImpl implements EmailHistoryDao {
 
     private static final String SQL_SELECT = "SELECT * FROM email_history";
     private static final String SQL_COUNT = "SELECT COUNT(*) FROM email_history";
     private static final String PAGINATION_CLAUSE = " ORDER BY sent_at DESC LIMIT ? OFFSET ?";
 
+    @Override
     public EmailHistory save(EmailHistory emailHistory) {
         final String SQL_INSERT = "INSERT INTO email_history (recipient, subject, body, sent_at, related_order_id) " +
                 "VALUES (?, ?, ?, ?, ?)";
@@ -59,6 +60,7 @@ public class EmailHistoryDao {
         }
     }
 
+    @Override
     public Optional<EmailHistory> findById(Long id) {
         final String SQL_FIND = SQL_SELECT + " WHERE id = ?";
         try (Connection conn = ConnectionFactory.getConnection();
@@ -77,6 +79,7 @@ public class EmailHistoryDao {
         }
     }
 
+    @Override
     public Page<EmailHistory> findAll(Pageable pageable, EmailFilterRequest filter) {
         StringBuilder sql = new StringBuilder(SQL_SELECT);
         StringBuilder countSql = new StringBuilder(SQL_COUNT);
@@ -108,6 +111,7 @@ public class EmailHistoryDao {
         }
     }
 
+    @Override
     public void delete(Long id) {
         final String SQL_DELETE = "DELETE FROM email_history WHERE id = ?";
         try (Connection conn = ConnectionFactory.getConnection();

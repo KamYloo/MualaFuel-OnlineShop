@@ -30,8 +30,10 @@ import static org.mockito.Mockito.*;
 
 class AuthServiceTest {
 
-    @Mock UserDao userDao;
-    @Mock RoleDao roleDao;
+    @Mock
+    UserDao userDao;
+    @Mock
+    RoleDao roleDao;
     @Mock PasswordEncoder passwordEncoder;
     @Mock AuthenticationManager authenticationManager;
     @Mock Mapper<User, UserDto> mapper;
